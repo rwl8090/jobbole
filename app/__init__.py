@@ -40,7 +40,7 @@ db = SQLAlchemy()
 #                                     ),
 # ))
 
-topbar = Navbar(u'Flask入门',
+topbar = Navbar(u'伯乐在线',
                     View('主页', 'main.index'),
                     View('内容', 'main.index'),
                 Subgroup(u'项目',
@@ -48,6 +48,12 @@ topbar = Navbar(u'Flask入门',
                          Separator(),
                          View(u'项目二', 'main.index'),
                          ),
+                Subgroup(u'项目',
+                         View(u'项目一', 'main.index'),
+                         Separator(),
+                         View(u'项目二', 'main.index'),
+                         ),
+
                     )
 
 nav = Nav()

@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" >
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mycss.css') }}" >
 {% endblock %}
-{% block navbar %}
-    {{ nav.top.render() }}
-{% endblock %}
+
+    {% block navbar %}
+     <div class="col-md-10 col-lg-offset-1">   {{ nav.top.render() }} </div>
+    {% endblock %}
+
 
 {% block scripts %}
     <script src="{{ url_for('static', filename='jquery.min.js') }}" ></script>

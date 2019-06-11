@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block html_attribs %} lang="zh"{% endblock %}
+{% block title %}{{ title_name }}{% endblock %}
+{% block content %}
+    <form method="POST" class="form-horizontal", role="form">
+        <div class="col-md-3 col-md-offset-4">
+{#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.name, placeholder='用户名') }}
+            {{ wtf.form_field(form.passwd, placeholder='密码') }}
+            {{ wtf.form_field(form.submit) }}
+
+        </div>
+    </form>
+
+
+{#    <form method="POST" class="form-horizontal" role="form">#}
+{#        <div class="col-md-4 col-md-offset-4">#}
+            {#        {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
+{#            {{ wtf.form_field(form.name) }}#}
+{#            {{ wtf.form_field(form.passwd) }}#}
+{#            {{ wtf.form_field(form.submit) }}#}
+{##}
+{#        </div>#}
+{#    </form>  #}
+{% endblock %}
+
+
+
+
+
+{#{% block content %}#}
+{#    <form method="POST" class="form-horizontal" role="form">#}
+{#        <div class="form-group"><div class="col-md-4 col-md-offset-4"> {{ wtf.form_field(form.name) }} </div></div>#}
+{#        <div class="form-group"><div class="col-md-4 col-md-offset-4"> {{ wtf.form_field(form.passwd) }} </div></div>#}
+{#        <div class="form-group"><div class="col-md-4 col-md-offset-4">{{ wtf.form_field(form.submit) }}</div></div>#}
+{##}
+{#    </form>#}
+{#{% endblock %}#}
+
+
