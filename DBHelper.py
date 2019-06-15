@@ -6,6 +6,7 @@ Desc : 数据库操作
 '''
 
 from app import db
+from app.models import User
 
 class DBHelper(object):
 
@@ -19,3 +20,11 @@ class DBHelper(object):
             return False
         else:
             return True
+
+    def login_check(self, login_name, user_passwd):
+        '''登录验证'''
+        user = User.query.filter_by(user_login_name=login_name).first_or_404()
+        if user.check_passwd_hash(user_passwd):
+            return True
+        else:
+            return False

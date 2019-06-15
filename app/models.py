@@ -6,6 +6,8 @@ Desc : 数据模型层
 '''
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from . import manager
 
 # 数据库类
 class Role(db.Model):
@@ -16,7 +18,7 @@ class Role(db.Model):
     def __repr__(self):
         return '<Role %r>' % self.name
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
     user_id = db.Column(db.Integer, primary_key=True, comment='用户ID')
     user_name = db.Column(db.String(50), comment='用户名')
@@ -26,7 +28,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.role_id'))
 
     def __repr__(self):
-        return '<User %r>' % self.user_name
+        return '<User %r>' % self.user_login_name
 
     @property
     def user_passwd(self):
@@ -40,3 +42,11 @@ class User(db.Model):
     def check_passwd_hash(self, passwd):
         '''校对密码'''
         return check_password_hash(self.user_passwd_hash, passwd)
+
+    def get_id(self):
+        return (self.user_id)
+
+
+@manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

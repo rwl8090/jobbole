@@ -13,7 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View, Subgroup, Separator
-
+from flask_login import LoginManager
 
 bootstrap = Bootstrap()
 mail = Mail()
@@ -59,6 +59,10 @@ topbar = Navbar(u'伯乐在线',
 nav = Nav()
 nav.register_element('top', topbar)
 
+manager = LoginManager()
+# LoginManager 对象的 login_view 属性用于设置登录页面的端点。匿名用户尝试访问受保护的页面时，Flask-Login 将重定向到登录页面
+manager.login_view = 'auth.login'
+
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -70,10 +74,13 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
     nav.init_app(app)
+    manager.init_app(app)
 
 
     from .main import main_bp as main_blueprint
-    app.register_blueprint(main_blueprint)  # 注册蓝本
+    from .auth import auth_bp as auth_blueprint
+    app.register_blueprint(main_blueprint) #, url_prefix='/')  # 注册蓝本
+    app.register_blueprint(auth_blueprint)  # 注册蓝本
 
     return app
 

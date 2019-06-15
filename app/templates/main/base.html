@@ -1,0 +1,86 @@
+{% extends 'bootstrap/base.html' %}
+{% block html_attribs %} lang="zh"{% endblock %}
+{% block title %}This is an example page{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mycss.css') }}" >
+{% endblock %}
+
+{#{% block navbar %}#}
+{#    <div class="col-md-10 col-lg-offset-1">   {{ nav.top.render() }}    </div> #}
+{#{% endblock %}#}
+{% block navbar %}
+    <div class="col-md-10 col-lg-offset-1">   <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#9b4e19e40f128155557f6ec359406246a0593bf9" data-toggle="collapse" type="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span class="navbar-brand">伯乐在线</span>
+            </div>
+            <div class="navbar-collapse collapse" id="9b4e19e40f128155557f6ec359406246a0593bf9">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/" title="主页">主页</a>
+                    </li>
+                    <li>
+                        <a href="/" title="内容">内容</a>
+                    </li>
+                    <li class="dropdown">
+                        <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">项目
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/" title="项目一">项目一</a>
+                            </li>
+                            <li class="divider" role="separator"></li>
+                            <li>
+                                <a href="/" title="项目二">项目二</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">项目
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/" title="项目一">项目一</a>
+                            </li>
+                            <li class="divider" role="separator"></li>
+                            <li>
+                                <a href="{{ url_for('main.index') }}" title="项目二">项目二</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_authenticated %}
+{#                        <li><a href="#">{{ current_user.user_login_name }}</a></li>#}
+                        <li><a class="close" data-dismiss="alert" href="{{ url_for('auth.logout') }}">注销({{ current_user.user_login_name }})</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('auth.login') }}">登录</a></li>
+                    {% endif %}
+                </ul>
+
+            </div>
+        </div>
+    </nav>    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='jquery.min.js') }}" ></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+{% endblock scripts %}
+
+{##}
+{#{% block scripts %}#}
+{#    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>#}
+{#    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>#}
+{#{% endblock scripts %}#}
