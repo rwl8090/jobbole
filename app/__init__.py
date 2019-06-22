@@ -62,7 +62,7 @@ nav.register_element('top', topbar)
 manager = LoginManager()
 # LoginManager 对象的 login_view 属性用于设置登录页面的端点。匿名用户尝试访问受保护的页面时，Flask-Login 将重定向到登录页面
 manager.login_view = 'auth.login'
-
+manager.login_message = u"没有权限访问，请登录。"   # 定制无访问权限时提示消息
 
 def create_app(config_name):
     app = Flask(__name__)

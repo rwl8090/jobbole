@@ -3,14 +3,18 @@
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ title_name }}{% endblock %}
 {% block content %}
+    <div class="col-md-3 col-md-offset-4" align="center">
+        <h3>{{ title_name }}</h3>
+    </div>
+
     <form method="POST" class="form-horizontal", role="form">
         <div class="col-md-3 col-md-offset-4">
 {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.name, placeholder='用户名') }}
-            {{ wtf.form_field(form.passwd, placeholder='密码') }}
+            {{ wtf.form_field(form.user_email, placeholder='邮箱') }}
+            {{ wtf.form_field(form.user_passwd, placeholder='密码') }}
             {{ wtf.form_field(form.submit) }}
-
+            <a href="{{ url_for('auth.forget_passwd') }}">  忘记密码</a>
         </div>
     </form>
 

@@ -10,10 +10,9 @@
         <div class="col-md-3 col-md-offset-4">
             {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.user_name, placeholder='用户名') }}
-            {{ wtf.form_field(form.user_email, placeholder='邮箱') }}
-            {{ wtf.form_field(form.user_passwd, placeholder='密码') }}
-            {{ wtf.form_field(form.user_passwd_confirm, placeholder='确认密码') }}
+            {{ wtf.form_field(form.old_user_passwd, placeholder='旧密码') }}
+            {{ wtf.form_field(form.new_user_passwd, placeholder='新密码') }}
+            {{ wtf.form_field(form.confirm_user_passwd, placeholder='确认密码') }}
             {{ wtf.form_field(form.submit) }}
 
         </div>

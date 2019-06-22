@@ -8,7 +8,9 @@ Desc : 视图层
 from flask import render_template
 from . import main_bp
 from flask_login import login_required
-
+from flask_mail import Message
+from app import mail
+import pysnooper
 
 @main_bp.route('/', methods=['GET','POST'])
 @login_required
@@ -19,3 +21,15 @@ def index():
     return render_template('main/index.html', title_name='Index')
 
 
+
+@main_bp.route('/send_email/')
+@pysnooper.snoop()
+def send_email():
+    message = Message(subject=u'hello', recipients=['865178375@qq.com'], body=u'flask')
+    try:
+        print(message)
+        mail.send(message)
+        return '发送成功，请注意查收~'
+    except Exception as e:
+        print(e)
+        return '发送失败'

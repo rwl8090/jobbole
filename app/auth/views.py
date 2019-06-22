@@ -8,11 +8,12 @@ Desc : 描述内容
 
 from flask import render_template, session, redirect, url_for, flash, request
 from . import auth_bp
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm
 from ..models import User
-from DBHelper import DBHelper
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 import pysnooper
+from app import db
+from ..email import send_email
 
 
 @auth_bp.route('/login/', methods=['GET','POST'])
@@ -21,9 +22,9 @@ def login():
     '''用户登录'''
     loginform = LoginForm()
     if loginform.validate_on_submit():
-        session['name'] = loginform.name.data
-        user = User.query.filter_by(user_login_name=loginform.name.data).first()
-        if user is not None and user.check_passwd_hash(loginform.passwd.data):
+        session['user_email'] = loginform.user_email.data
+        user = User.query.filter_by(user_email=loginform.user_email.data).first()
+        if user is not None and user.check_passwd_hash(loginform.user_passwd.data):
             ''' login_user() 函数的参数是要登录的用户，以及可选的“记住我”
 布尔值，“记住我”也在表单中勾选。如果这个字段的值为 False ，关闭浏览器后用户会话
 就过期了，所以下次用户访问时要重新登录。如果值为 True ，那么会在用户浏览器中写入
@@ -36,7 +37,7 @@ def login():
             return redirect(url_for('main.index'))
         else:
             flash('用户密码验证失败！')
-        print(loginform.name.data, loginform.passwd.data)
+        print(loginform.user_email.data, loginform.user_passwd.data)
         return redirect(url_for('.login'))
     return render_template('auth/login.html', form=loginform, title_name='登录')
 
@@ -45,26 +46,101 @@ def login():
 def register():
     '''注册用户'''
     rg_form = RegisterForm()  # 注册表单
-    if rg_form.validate_on_submit():
-        print('-------------------')
-        rg_user = User(user_login_name=rg_form.user_login_name.data, user_passwd=rg_form.user_passwd.data)
-        print(rg_form)
-        helper = DBHelper()
 
-        if helper.add_data(rg_user):
-            flash('恭喜，用户注册成功，可以前往登录了！！')
-        else:
-            flash('糟糕，注册失败了，检查下输入用户名或密码！')
+    if rg_form.validate_on_submit():
+        rg_user = User(user_name=rg_form.user_name.data, \
+                       user_email=rg_form.user_email.data, \
+                       user_passwd=rg_form.user_passwd.data)
+
+        try:
+            db.session.add(rg_user)
+            db.session.commit()
+            token = rg_user.generate_confirmation_token()
+            send_email(rg_user.user_email, 'Confirm Your Account', 'email/confirm', user=rg_user, token=token)
+            flash('恭喜，用户注册成功，请前往邮箱确认！！')
+        except Exception as e:
+            flash('糟糕，注册失败了，检查下输入用户名或密码！', e)
         return redirect(url_for('.register'))
     return render_template('auth/register.html', form=rg_form, title_name='用户注册')
+
+
+@auth_bp.route('/confirm/<token>/')
+@login_required
+@pysnooper.snoop()
+def confirm(token):
+    '''需登录验证'''
+    if current_user.confirmed:
+        return redirect(url_for('main.index'))
+    if current_user.confirm(token):
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!')
+    else:
+        flash('The confirmation link is invalid or has expired.')
+    return redirect(url_for('main.index'))
+
+
+@auth_bp.route('/ulgconfirm/<token>/')
+@pysnooper.snoop()
+def ulgconfirm(token):
+    '''非登录验证'''
+    if current_user.confirmed:
+        return redirect(url_for('main.index'))
+    if current_user.confirm(token):
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!')
+    else:
+        flash('The confirmation link is invalid or has expired.')
+    return redirect(url_for('main.index'))
+
 
 
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    '''用户注销'''
     logout_user()
     flash('注销成功！！')
     return redirect(url_for('auth.login'))
 
 
+@auth_bp.route('/chpasswd/', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def chpasswd():
+    '''登录用户修改密码'''
+    passwd_form = ChpasswdForm()
+    if passwd_form.validate_on_submit():
+       if current_user.check_passwd_hash(passwd_form.old_user_passwd.data): # 校对原始密码
+           current_user.user_passwd = passwd_form.new_user_passwd.data
+           db.session.add(current_user)
+           db.session.commit()
+           flash('密码已重置，请重新登录')
+           logout_user()
+           return redirect(url_for('auth.login'))
+       else:
+           flash('原始密码错误！！')
+    return render_template('auth/chpasswd.html', form=passwd_form, title_name='修改密码')
 
+
+@auth_bp.route('/forget_passwd/', methods=['GET', 'POST'])
+@pysnooper.snoop()
+def forget_passwd():
+    '''忘记密码'''
+    form = PasswdResetResponseForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(user_email=form.user_email.data.lower()).first()
+        token = user.generate_confirmation_token()
+        send_email(user.user_email, '重置密码',
+	                       'email/reset_password',
+	                       user=user, token=token)
+
+
+    return render_template('auth/forget_passwd.html', form=form, title_name='忘记密码')
+
+
+@auth_bp.route('/passwd_reset/', methods=['GET', 'POST'])
+@pysnooper.snoop()
+def passwd_reset():
+
+
+    pass
