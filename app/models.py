@@ -38,6 +38,24 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.role_id'))
     confirmed = db.Column(db.Boolean, default=False)
 
+    @staticmethod
+    def reset_passwd(token, new_password):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token.encode('utf-8'))
+        except:
+            return False
+        user = User.query.get(data.get('reset'))
+        if user is None:
+            return False
+        user.user_passwd = new_password
+        db.session.add(user)
+        return True
+
+    def generate_reset_token(self, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'reset': self.user_id}).decode('utf-8')
+
 
     def generate_confirmation_token(self, expiration=3600):
         '''generate_confirmation_token() 方法生成一个令牌，有效期默认为一小时'''
@@ -76,6 +94,9 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return (self.user_id)
+
+
+
 
 
 @manager.user_loader

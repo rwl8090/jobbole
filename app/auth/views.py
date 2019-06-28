@@ -73,9 +73,9 @@ def confirm(token):
         return redirect(url_for('main.index'))
     if current_user.confirm(token):
         db.session.commit()
-        flash('You have confirmed your account. Thanks!')
+        flash('必须登录才能验证账户！')
     else:
-        flash('The confirmation link is invalid or has expired.')
+        flash('验证连接已失效！')
     return redirect(url_for('main.index'))
 
 
@@ -129,18 +129,26 @@ def forget_passwd():
     form = PasswdResetResponseForm()
     if form.validate_on_submit():
         user = User.query.filter_by(user_email=form.user_email.data.lower()).first()
-        token = user.generate_confirmation_token()
-        send_email(user.user_email, '重置密码',
-	                       'email/reset_password',
-	                       user=user, token=token)
-
-
+        token = user.generate_reset_token()
+        try:
+            send_email(user.user_email, '重置密码', 'email/reset_passwd', user=user, token=token)
+            flash('重置密码邮件已发送，请注意查收确认！')
+        except:
+            flash('邮件发送失败了！！！')
+        return redirect(url_for('.forget_passwd'))
     return render_template('auth/forget_passwd.html', form=form, title_name='忘记密码')
 
 
-@auth_bp.route('/passwd_reset/', methods=['GET', 'POST'])
-@pysnooper.snoop()
-def passwd_reset():
-
-
-    pass
+@auth_bp.route('/reset/<token>', methods=['GET', 'POST'])
+def password_reset(token):
+    if not current_user.is_anonymous:
+        return redirect(url_for('main.index'))
+    form = PasswdResetForm()
+    if form.validate_on_submit():
+        if User.reset_passwd(token, form.new_user_passwd.data):
+            db.session.commit()
+            flash('你的密码已重置，请重新登录！')
+            return redirect(url_for('auth.login'))
+        else:
+            return redirect(url_for('main.index'))
+    return render_template('auth/reset_passwd.html', form=form, title_name='重置密码')
