@@ -34,7 +34,6 @@ class User(UserMixin, db.Model):
     user_email = db.Column(db.String(20), unique=True, comment='邮箱')
     user_mbl_nm = db.Column(db.String(20), unique=True, comment='用户电话')
     user_passwd_hash = db.Column(db.String(255), comment='用户密码')
-    #user_login_name = db.Column(db.String(30), comment='登录名', unique=True, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('role.role_id'))
     confirmed = db.Column(db.Boolean, default=False)
 
@@ -75,6 +74,17 @@ class User(UserMixin, db.Model):
         self.confirmed = True
         db.session.add(self)
         return True
+
+    @staticmethod
+    def ulgconfirm(token):
+        '''无登录验证'''
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token.encode('utf-8'))
+        except:
+            return False
+        return data.get('confirm')
+
 
     def __repr__(self):
         return '<User %r>' % self.user_name

@@ -83,14 +83,22 @@ def confirm(token):
 @pysnooper.snoop()
 def ulgconfirm(token):
     '''非登录验证'''
-    if current_user.confirmed:
-        return redirect(url_for('main.index'))
-    if current_user.confirm(token):
-        db.session.commit()
-        flash('You have confirmed your account. Thanks!')
+
+    uid = User.ulgconfirm(token=token)
+    if uid:
+        user = User.query.filter_by(user_id=uid).first()
+        if user.confirmed:
+            flash('该用户已确认，请勿重新确认！')
+            return redirect(url_for('auth.login'))
+        else:
+            user.confirmed=True
+            db.session.add(user)
+            db.session.commit()
+            flash('用户已确认，请登录')
+            return redirect(url_for('auth.login'))
     else:
-        flash('The confirmation link is invalid or has expired.')
-    return redirect(url_for('main.index'))
+        flash('url无效，请重新确认！')
+        return redirect(url_for('auth.login'))
 
 
 
