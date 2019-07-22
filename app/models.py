@@ -17,6 +17,19 @@ from flask import current_app
 #     def confirmed(self):
 #         return False
 
+# 关注用户 FOLLOW 1
+# 在他人的文章中发表评论 COMMENT 2
+# 写文章 WRITE 4
+# 管理他人发表的评论 MODERATE 8
+# 管理员权限 ADMIN 16
+
+class Permission:
+    FOLLOW = 1
+    COMMENT = 2
+    WRITE = 4
+    MODERATE = 8
+    ADMIN = 16
+
 
 # 数据库类
 class Role(db.Model):
@@ -35,6 +48,41 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role %r>' % self.name
+
+    def has_permission(self, perm):
+        '''查询是否具有此权限  '''
+        return self.permission & perm == perm
+
+    def add_permission(self, perm):
+        if not self.has_permission(perm):
+            self.permission += perm
+
+    def remove_permission(self, perm):
+        if self.has_permission(perm):
+            self.permission -= perm
+
+    def reset_permission(self):
+        self.permission = 0
+
+    @staticmethod
+    def insert_roles():
+         roles = {
+            'User': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
+            'Moderator': [Permission.FOLLOW, Permission.COMMENT,Permission.WRITE, Permission.MODERATE],
+            'Administrator': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE, Permission.ADMIN],
+         }
+         default_role = 'User'
+         for r in roles:
+             role = Role.query.filter_by(name=r).first()
+             if role is None:
+                 role = Role(name=r)
+             role.reset_permissions()
+             for perm in roles[r]:
+                 role.add_permission(perm)
+             role.default = (role.name == default_role)
+             db.session.add(role)
+         db.session.commit()
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
@@ -115,6 +163,27 @@ class User(UserMixin, db.Model):
         return (self.user_id)
 
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if self.role is None:
+            if self.email == current_app.config['FLASK_ADMIN']:
+                self.role = Role.query.filter_by(name='Administrator').first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
+
+    def can(self, perm):
+        return self.role is not None and self.role.has_permission(perm)
+
+    def is_administrator(self):
+        return self.can(Permission.ADMIN)
+
+
+class AnonymousUser(AnonymousUserMixin):
+    def can(self, permissions):
+        return False
+
+    def is_administrator(self):
+        return False
 
 
 
