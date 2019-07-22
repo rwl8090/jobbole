@@ -23,7 +23,16 @@ class Role(db.Model):
     __tablename__ = 'role'  # 指定表名
     role_id = db.Column(db.Integer, primary_key=True, comment='角色ID')
     role_name = db.Column(db.String(50), unique=True, comment='角色名称')
-    user = db.relationship('User', backref='role')
+    default = db.Column(db.Boolean, default=False, index=True)
+    permission = db.Column(db.Integer)
+
+    user = db.relationship('User', backref='role', lazy='dynamic')
+
+    def __init__(self, **kwargs):
+        super(Role, self).__init__(**kwargs)
+        if self.permission is None:
+            self.permission = 0
+
     def __repr__(self):
         return '<Role %r>' % self.name
 
