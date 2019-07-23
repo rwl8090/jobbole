@@ -11,6 +11,8 @@ from flask_login import login_required
 from flask_mail import Message
 from app import mail
 import pysnooper
+from app.decorators import admin_required, permission_required
+from app.models import Permission
 
 @main_bp.route('/', methods=['GET','POST'])
 @login_required
@@ -19,7 +21,6 @@ def index():
     # if form.validate_on_submit():
     #     return redirect(url_for('main.index'))
     return render_template('main/index.html', title_name='Index')
-
 
 
 @main_bp.route('/send_email/')
@@ -33,3 +34,11 @@ def send_email():
     except Exception as e:
         print(e)
         return '发送失败'
+
+
+@main_bp.route('/moderate')
+@login_required
+@permission_required(Permission.MODERATE)
+def for_moderators_only():
+    return "For comment moderators!"
+

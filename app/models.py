@@ -11,6 +11,7 @@ from . import manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 
+
 # class AnonymousUser(AnonymousUserMixin):
 #     # confirmed = False
 #     @property
@@ -66,22 +67,23 @@ class Role(db.Model):
 
     @staticmethod
     def insert_roles():
-         roles = {
+        roles = {
             'User': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
-            'Moderator': [Permission.FOLLOW, Permission.COMMENT,Permission.WRITE, Permission.MODERATE],
-            'Administrator': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE, Permission.ADMIN],
-         }
-         default_role = 'User'
-         for r in roles:
-             role = Role.query.filter_by(name=r).first()
-             if role is None:
-                 role = Role(name=r)
-             role.reset_permissions()
-             for perm in roles[r]:
-                 role.add_permission(perm)
-             role.default = (role.name == default_role)
-             db.session.add(role)
-         db.session.commit()
+            'Moderator': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE],
+            'Administrator': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE,
+                              Permission.ADMIN],
+        }
+        default_role = 'User'
+        for r in roles:
+            role = Role.query.filter_by(role_name=r).first()
+            if role is None:
+                role = Role(role_name=r)
+            role.reset_permissions()
+            for perm in roles[r]:
+                role.add_permission(perm)
+            role.default = (role.role_name == default_role)
+            db.session.add(role)
+        db.session.commit()
 
 
 class User(UserMixin, db.Model):
@@ -112,7 +114,6 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'reset': self.user_id}).decode('utf-8')
 
-
     def generate_confirmation_token(self, expiration=3600):
         '''generate_confirmation_token() 方法生成一个令牌，有效期默认为一小时'''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -142,7 +143,6 @@ class User(UserMixin, db.Model):
             return False
         return data.get('confirm')
 
-
     def __repr__(self):
         return '<User %r>' % self.user_name
 
@@ -162,12 +162,11 @@ class User(UserMixin, db.Model):
     def get_id(self):
         return (self.user_id)
 
-
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config['FLASK_ADMIN']:
-                self.role = Role.query.filter_by(name='Administrator').first()
+            if self.user_email == current_app.config['FLASKY_ADMIN']:
+                self.role = Role.query.filter_by(role_name='Administrator').first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
 
@@ -184,7 +183,6 @@ class AnonymousUser(AnonymousUserMixin):
 
     def is_administrator(self):
         return False
-
 
 
 @manager.user_loader
