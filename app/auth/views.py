@@ -160,3 +160,8 @@ def password_reset(token):
         else:
             return redirect(url_for('main.index'))
     return render_template('auth/reset_passwd.html', form=form, title_name='重置密码')
+
+
+
+
+

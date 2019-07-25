@@ -42,3 +42,8 @@ def send_email():
 def for_moderators_only():
     return "For comment moderators!"
 
+@main_bp.route('/roles')
+def insert_roles():
+    from app.models import Role
+    Role.insert_roles()
+    return 'hello'

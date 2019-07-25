@@ -62,7 +62,7 @@ class Role(db.Model):
         if self.has_permission(perm):
             self.permission -= perm
 
-    def reset_permission(self):
+    def reset_permissions(self):
         self.permission = 0
 
     @staticmethod
@@ -178,6 +178,7 @@ class User(UserMixin, db.Model):
 
 
 class AnonymousUser(AnonymousUserMixin):
+
     def can(self, permissions):
         return False
 
