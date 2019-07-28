@@ -163,5 +163,10 @@ def password_reset(token):
 
 
 
+@auth_bp.before_app_request
+def before_request():
+    if current_user.authenticated and not current_user.confirmed \
+            and request.blueprint!='auth' and request.endpoint!='static':
+        return redirect(url_for('/'))
 
 

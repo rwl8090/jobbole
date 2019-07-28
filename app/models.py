@@ -10,6 +10,7 @@ from flask_login import UserMixin, AnonymousUserMixin
 from . import manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
+from datetime import datetime
 
 
 # class AnonymousUser(AnonymousUserMixin):
@@ -95,6 +96,20 @@ class User(UserMixin, db.Model):
     user_passwd_hash = db.Column(db.String(255), comment='用户密码')
     role_id = db.Column(db.Integer, db.ForeignKey('role.role_id'))
     confirmed = db.Column(db.Boolean, default=False)
+    location = db.Column(db.String(64))
+    about_me = db.Column(db.Text())
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+
+    def ping(self):
+        '''更新用户最后登录时间'''
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
+
+
+
+
 
     @staticmethod
     def reset_passwd(token, new_password):

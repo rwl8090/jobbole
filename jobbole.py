@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'development')
-migrate = Migrate(app, db)
+migrate = Migrate(app, db)   # 初始化migrate
 
 # set FLASK_APP=jobbole.py
 # set FALSK_DEBUG=1

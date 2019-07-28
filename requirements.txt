@@ -1,0 +1,10 @@
+flask
+flask-login
+flask-migrate
+flask-wtf
+flask-mail
+flask-bootstrap
+Flask-SQLAlchemy
+flask-nav
+Flask-Moment
+Flask-User

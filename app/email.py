@@ -9,8 +9,8 @@ from app import mail
 from flask_mail import Message
 from flask import render_template
 from threading import Thread
-from jobbole import app
-#import app
+#from jobbole import app
+import app
 import pysnooper
 
 @pysnooper.snoop()
