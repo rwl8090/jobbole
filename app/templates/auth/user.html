@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+{% block title %}Flasky - {{ user.user_name }}{% endblock %}
+{% block content %}
+    <div class="col-md-12 col-md-offset-0">
+
+        <h1>用户名： {{ user.user_name }}</h1>
+        <h2>用户邮箱： {{ user.user_email }}</h2>
+        <h2>用户权限ID： {{ user.role_id }}</h2>
+        <h2>用户最后一次登录时间： {{ user.last_seen }}</h2>
+
+
+        <p>
+            Member since {{ moment(user.member_since).format('L') }}.
+            Last seen {{ moment(user.last_seen).fromNow() }}.
+        </p>
+
+    </div>
+{% endblock %}

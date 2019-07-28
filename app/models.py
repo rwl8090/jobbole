@@ -108,9 +108,6 @@ class User(UserMixin, db.Model):
         db.session.commit()
 
 
-
-
-
     @staticmethod
     def reset_passwd(token, new_password):
         s = Serializer(current_app.config['SECRET_KEY'])

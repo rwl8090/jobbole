@@ -16,7 +16,7 @@ from app import db
 from ..email import send_email
 
 
-@auth_bp.route('/login/', methods=['GET','POST'])
+@auth_bp.route('/login/', methods=['GET', 'POST'])
 @pysnooper.snoop()
 def login():
     '''用户登录'''
@@ -101,7 +101,6 @@ def ulgconfirm(token):
         return redirect(url_for('auth.login'))
 
 
-
 @auth_bp.route('/logout')
 @login_required
 def logout():
@@ -162,11 +161,21 @@ def password_reset(token):
     return render_template('auth/reset_passwd.html', form=form, title_name='重置密码')
 
 
-
 @auth_bp.before_app_request
 def before_request():
-    if current_user.authenticated and not current_user.confirmed \
-            and request.blueprint!='auth' and request.endpoint!='static':
-        return redirect(url_for('/'))
+    if current_user.is_authenticated:
+        current_user.ping()
+        if not current_user.confirmed \
+               and request.endpoint \
+               and request.blueprint != 'auth' \
+               and request.endpoint != 'static':
+            return redirect(url_for('main.index'))
+
+
+@auth_bp.route('/user/<username>')
+@pysnooper.snoop()
+def user():
+    user = User.query.filter_by(user_name=username).first_or_404()
+    return render_template('auth/user.html', user=user)
 
 

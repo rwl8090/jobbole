@@ -76,8 +76,8 @@ def create_app(config_name):
     nav.init_app(app)
     manager.init_app(app)
 
-
     from .main import main_bp as main_blueprint
+
     from .auth import auth_bp as auth_blueprint
     app.register_blueprint(main_blueprint) #, url_prefix='/')  # 注册蓝本
     app.register_blueprint(auth_blueprint)  # 注册蓝本

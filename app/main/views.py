@@ -14,8 +14,9 @@ import pysnooper
 from app.decorators import admin_required, permission_required
 from app.models import Permission
 
-@main_bp.route('/', methods=['GET','POST'])
-@login_required
+
+@main_bp.route('/index', methods=['GET', 'POST'])
+#@login_required
 def index():
     # form = NameForm()
     # if form.validate_on_submit():
@@ -41,6 +42,7 @@ def send_email():
 @permission_required(Permission.MODERATE)
 def for_moderators_only():
     return "For comment moderators!"
+
 
 @main_bp.route('/roles')
 def insert_roles():
