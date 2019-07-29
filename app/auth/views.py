@@ -171,10 +171,13 @@ def before_request():
 
 
 @auth_bp.route('/user/<username>')
+@login_required
 @pysnooper.snoop()
 def user(username):
     user = User.query.filter_by(user_name=username).first_or_404()
-    return render_template('auth/user.html', user=user)
+    if user == current_user:  # 判断当前登录的用户是否为链接选择的用户
+        return render_template('auth/user.html', user=user)
+    return '链接错误。。。'
 
 
 @auth_bp.route('/unconfirmed/')
