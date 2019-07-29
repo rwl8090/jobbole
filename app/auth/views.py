@@ -31,9 +31,6 @@ def login():
 一个长期有效的 cookie，使用这个 cookie 可以复现用户会话。cookie 默认记住一年，可以
 使用可选的 REMEMBER_COOKIE_DURATION 配置选项更改这个值'''
             login_user(user, False)
-            #next = request.args.get('next')
-            #if next is None or not next.startswith('/'):
-             #   next = url_for('main.index')
             return redirect(url_for('main.index'))
         else:
             flash('用户密码验证失败！')
@@ -162,6 +159,7 @@ def password_reset(token):
 
 
 @auth_bp.before_app_request
+@pysnooper.snoop()
 def before_request():
     if current_user.is_authenticated:
         current_user.ping()
@@ -169,13 +167,16 @@ def before_request():
                and request.endpoint \
                and request.blueprint != 'auth' \
                and request.endpoint != 'static':
-            return redirect(url_for('main.index'))
+            return redirect(url_for('auth.unconfirmed'))
 
 
 @auth_bp.route('/user/<username>')
 @pysnooper.snoop()
-def user():
+def user(username):
     user = User.query.filter_by(user_name=username).first_or_404()
     return render_template('auth/user.html', user=user)
 
 
+@auth_bp.route('/unconfirmed/')
+def unconfirmed():
+    return '用户未认证，请重新认证！！！'

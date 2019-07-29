@@ -15,8 +15,8 @@ from app.decorators import admin_required, permission_required
 from app.models import Permission
 
 
-@main_bp.route('/index', methods=['GET', 'POST'])
-#@login_required
+@main_bp.route('/', methods=['GET', 'POST'])
+@pysnooper.snoop()
 def index():
     # form = NameForm()
     # if form.validate_on_submit():
