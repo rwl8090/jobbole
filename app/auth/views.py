@@ -8,7 +8,7 @@ Desc : 描述内容
 
 from flask import render_template, session, redirect, url_for, flash, request
 from . import auth_bp
-from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm
+from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm, EditUserForm
 from ..models import User
 from flask_login import login_user, login_required, logout_user, current_user
 import pysnooper
@@ -20,6 +20,10 @@ from ..email import send_email
 @pysnooper.snoop()
 def login():
     '''用户登录'''
+
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+
     loginform = LoginForm()
     if loginform.validate_on_submit():
         session['user_email'] = loginform.user_email.data
@@ -167,7 +171,8 @@ def before_request():
                and request.endpoint \
                and request.blueprint != 'auth' \
                and request.endpoint != 'static':
-            return redirect(url_for('auth.unconfirmed'))
+            r = redirect(url_for('auth.unconfirmed'))
+            return r
 
 
 @auth_bp.route('/user/<username>')
@@ -183,3 +188,21 @@ def user(username):
 @auth_bp.route('/unconfirmed/')
 def unconfirmed():
     return '用户未认证，请重新认证！！！'
+
+
+@auth_bp.route('/edit_profile/', methods=['GET', 'POST'])
+@pysnooper.snoop()
+def edit_profile():
+    edituserform = EditUserForm()
+    if edituserform.validate_on_submit():
+        current_user.user_name = edituserform.user_name.data
+        current_user.location = edituserform.location.data
+        current_user.about_me = edituserform.about_me.data
+        db.session.add(current_user._get_current_object())
+        db.session.commit()
+        flash('您的资料已更新！！！')
+        return redirect(url_for('.user', username=current_user.user_name))
+    edituserform.user_name.data = current_user.user_name
+    edituserform.location.data = current_user.location
+    edituserform.about_me.data = current_user.about_me
+    return render_template('auth/edit_profile.html', form=edituserform, title='用户编辑')
