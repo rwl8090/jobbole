@@ -100,6 +100,7 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.now)
     last_seen = db.Column(db.DateTime(), default=datetime.now)
+    posts = db.relationship('Post', backref='post_id', lazy='dynamic')
 
 
     def ping(self):
@@ -188,6 +189,47 @@ class User(UserMixin, db.Model):
 
     def is_administrator(self):
         return self.can(Permission.ADMIN)
+
+
+######################################################################################################
+# 文章内容
+class Post(db.Model):
+    __tablename__ = 'post'
+    post_id = db.Column(db.Integer, primary_key=True, comment='文章id')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), comment='用户ID')
+    content = db.Column(db.Text, comment='文章内容')
+    crtd_time = db.Column(db.String, comment='创作时间')
+    last_edit_time = db.Column(db.String, comment='最后一次修改时间')
+    title = db.Column(db.String, comment='文章标题')
+
+
+# 文章评论
+class Comment(db.Model):
+    __tablename__ = 'comment'
+    comment_id = db.Column(db.Integer, primary_key=True, comment='评论id')
+    post_id = db.Column(db.Integer, db.ForeignKey('post.post_id'), comment='文章id')
+    comment_content = db.Column(db.Text, comment='评论内容')
+    crtd_time = db.Column(db.String, comment='评论时间')
+
+
+# 文章类型
+class Ptype(db.Model):
+    __tablename__ = 'ptype'
+    type_id = db.Column(db.Integer, primary_key=True, comment='类型id')
+    type_name = db.Column(db.String, comment='文章类型名称')
+
+
+# 文章评论与类型
+class Post2Comment(db.Model):
+    __tablename__ = 'post2comment'
+    pc_id = db.Column(db.Integer, primary_key=True, comment='id')
+    post_id = db.Column(db.Integer, comment='文章id')
+    type_id = db.Column(db.Integer, db.ForeignKey('ptype.type_id'), comment='评论id')
+    crtd_time = db.Column(db.String, comment='记录时间')
+
+##################################################################################################
+
+
 
 
 class AnonymousUser(AnonymousUserMixin):
