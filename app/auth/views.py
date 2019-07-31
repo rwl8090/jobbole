@@ -8,12 +8,13 @@ Desc : 描述内容
 
 from flask import render_template, session, redirect, url_for, flash, request
 from . import auth_bp
-from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm, EditUserForm
-from ..models import User
+from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm, EditUserForm, EditPostForm
+from ..models import User, Post
 from flask_login import login_user, login_required, logout_user, current_user
 import pysnooper
 from app import db
 from ..email import send_email
+from datetime import datetime
 
 
 @auth_bp.route('/login/', methods=['GET', 'POST'])
@@ -35,7 +36,8 @@ def login():
 一个长期有效的 cookie，使用这个 cookie 可以复现用户会话。cookie 默认记住一年，可以
 使用可选的 REMEMBER_COOKIE_DURATION 配置选项更改这个值'''
             login_user(user, False)
-            return redirect(url_for('main.index'))
+            # return redirect(url_for('main.index'))
+            return redirect(url_for('auth.user', username=current_user.user_name))
         else:
             flash('用户密码验证失败！')
         print(loginform.user_email.data, loginform.user_passwd.data)
@@ -206,3 +208,32 @@ def edit_profile():
     edituserform.location.data = current_user.location
     edituserform.about_me.data = current_user.about_me
     return render_template('auth/edit_profile.html', form=edituserform, title='用户编辑')
+
+
+@auth_bp.route('/edit_post/', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def edit_post():
+    editpostform = EditPostForm()
+    if editpostform.validate_on_submit():
+        post = Post(user_id=current_user.user_id,
+                    title=editpostform.title.data,
+                    content=editpostform.content.data,
+                    crtd_time=datetime.now(),
+                    last_edit_time=datetime.now())
+        db.session.add(post)
+        db.session.commit()
+        flash('增加博客成功！！')
+        return redirect(url_for('auth.edit_post'))
+    return render_template('auth/editpost.html', form=editpostform, title='新增博客')
+
+
+@auth_bp.route('/list_post/', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def list_post():
+    '''查看用户下所有的博客'''
+    posts = Post.query.filter_by(user_id=current_user.user_id).all()
+
+    return render_template('auth/listpost.html', posts=posts, title='我的博客')
+

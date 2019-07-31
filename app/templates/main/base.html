@@ -71,6 +71,8 @@
                                 <li><a data-dismiss="alert" href="{{ url_for('auth.logout') }}">注销登录</a></li>
                                 <li><a href="{{ url_for('auth.chpasswd') }}">修改密码</a></li>
                                 <li><a href="{{ url_for('auth.user', username=current_user.user_name) }}">个人中心</a></li>
+                                <li><a href="{{ url_for('auth.list_post') }}">我的博客</a></li>
+                                <li><a href="{{ url_for('auth.edit_post') }}">发布我的博客</a></li>
                             </ul>
                         </li>
                     {% else %}

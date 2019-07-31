@@ -78,3 +78,12 @@ class EditUserForm(FlaskForm):
     about_me = TextAreaField("关于我：")
     submit = SubmitField("确认修改")
 
+
+class EditPostForm(FlaskForm):
+    '''编辑博客'''
+    title = StringField("标题")
+    content = TextAreaField("内容")
+    submit = SubmitField("新增")
+
+
+

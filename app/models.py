@@ -100,7 +100,7 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.now)
     last_seen = db.Column(db.DateTime(), default=datetime.now)
-    posts = db.relationship('Post', backref='post_id', lazy='dynamic')
+    post = db.relationship('Post', backref='post', lazy='dynamic')
 
 
     def ping(self):

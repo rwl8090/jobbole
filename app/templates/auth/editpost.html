@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <div class="col-md-6 col-md-offset-3">
+
+    <form method="POST" class="form-horizontal", role="form">
+        <div class="col-md-12 col-md-offset-0">
+{#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.title) }}
+            {{ wtf.form_field(form.content, placeholder='内容') }}
+            {{ wtf.form_field(form.submit) }}
+        </div>
+    </form>
+
+    </div>
+    <div class="col-md-3 col-md-offset-4">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
