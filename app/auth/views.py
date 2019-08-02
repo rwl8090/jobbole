@@ -210,10 +210,10 @@ def edit_profile():
     return render_template('auth/edit_profile.html', form=edituserform, title='用户编辑')
 
 
-@auth_bp.route('/edit_post/', methods=['GET', 'POST'])
+@auth_bp.route('/add_post/', methods=['GET', 'POST'])
 @login_required
 @pysnooper.snoop()
-def edit_post():
+def add_post():
     editpostform = EditPostForm()
     if editpostform.validate_on_submit():
         post = Post(user_id=current_user.user_id,
@@ -225,7 +225,7 @@ def edit_post():
         db.session.commit()
         flash('增加博客成功！！')
         return redirect(url_for('auth.edit_post'))
-    return render_template('auth/editpost.html', form=editpostform, title='新增博客')
+    return render_template('auth/addpost.html', form=editpostform, title='新增博客')
 
 
 @auth_bp.route('/list_post/', methods=['GET', 'POST'])
