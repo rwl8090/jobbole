@@ -198,8 +198,8 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True, comment='文章id')
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), comment='用户ID')
     content = db.Column(db.Text, comment='文章内容')
-    crtd_time = db.Column(db.String, comment='创作时间')
-    last_edit_time = db.Column(db.String, comment='最后一次修改时间')
+    crtd_time = db.Column(db.DateTime, comment='创作时间')
+    last_edit_time = db.Column(db.Date, comment='最后一次修改时间')
     title = db.Column(db.String, comment='文章标题')
 
 

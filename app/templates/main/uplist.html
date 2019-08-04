@@ -1,0 +1,63 @@
+{% extends 'main/base.html' %}
+{% block html_attribs %} lang="zh"{% endblock %}
+{% block title %}{{ posts[0].user_name }}的博客空间{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-10 col-md-offset-1">
+
+
+        <div class="col-md-2">
+            {#     个人信息       #}
+            <img src="https://avatar.csdn.net/0/3/C/3_cainiao_python.jpg" class="img-circle" style="height: 60px;">
+            <span class="h4" style="vertical-align:middle ;padding-left: 15px">{{ posts[0].user_name }}</span>
+            <hr>
+            <span>来自：{{ posts[0].location }}</span>
+            <hr>
+            <p>关于我：{{ posts[0].about_me }}</p>
+
+        </div>
+
+        <div class="col-md-10">
+            {% for post in posts %}
+
+                <div class="row clearfix">
+
+                    <div class="col-md-12 column">
+
+                        <div class="col-md-12">
+                            <div class="col-md-10 column">
+                                <a class="h3" href="">{{ post.title }}</a>
+                            </div>
+                            <div class="col-md-2 column">
+                                <span class="label label-default">标签</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-md-offset-0">
+                            <div class="col-md-12 column">
+                                <p>{{ post.content }}</p>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 col-md-offset-0">
+                            <div class="col-md-10 column">
+                                <a>{{ post.user_name }}</a> | <span>{{ post.crtd_time }}</span>
+                            </div>
+                            <div class="col-md-2 column">
+                                <a>阅读数：</a> | <span>评论</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <hr>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock %}
+
+
