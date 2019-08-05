@@ -9,3 +9,8 @@ li > .dropdown-menu > .active > a,
 
 body > .navbar-default > .container-fluid {font-size: 18px;}
 
+ul, li, ol, dl, dd, dt, form {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}

@@ -12,16 +12,18 @@ from flask_mail import Message
 from app import mail
 import pysnooper
 from app.decorators import admin_required, permission_required
-from app.models import Permission
+from app.models import Permission, Post, User
+from app import db
 
 
 @main_bp.route('/', methods=['GET', 'POST'])
 @pysnooper.snoop()
 def index():
-    # form = NameForm()
-    # if form.validate_on_submit():
-    #     return redirect(url_for('main.index'))
-    return render_template('main/index.html', title_name='Index')
+    # posts = Post.query.order_by(Post.crtd_time.desc()).all()
+    posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+                             Post.title, User.user_name, User.user_id).\
+        filter(Post.user_id == User.user_id).order_by(Post.crtd_time.desc()).all()
+    return render_template('main/index.html', posts=posts, title_name='伯乐在线')
 
 
 @main_bp.route('/send_email/')
@@ -49,3 +51,22 @@ def insert_roles():
     from app.models import Role
     Role.insert_roles()
     return 'hello'
+
+
+@main_bp.route('/uplist/<userid>')
+def uplist(userid):
+    '''主页用户点击展示个人博客页面等'''
+    posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+                             Post.title, User.user_name, User.about_me, User.location, User.user_id).\
+        filter(Post.user_id == User.user_id).\
+        filter(Post.user_id == userid).order_by(Post.crtd_time.desc()).all()
+
+    return render_template('main/uplist.html', posts=posts)
+
+
+
+
+
+
+
+
