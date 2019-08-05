@@ -51,5 +51,5 @@ def posts(count=100):
     db.session.commit()
 
 
-#users(100)
+users(10)
 posts(100)

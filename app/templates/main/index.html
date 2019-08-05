@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ title_name }}{% endblock %}
+{% import "main/_macros.html" as macros %}
 
 {% block content %}
 
@@ -29,7 +30,8 @@
 
                     <div class="col-md-12 col-md-offset-0">
                         <div class="col-md-10 column">
-                            <a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> | <span>{{ post.crtd_time }}</span>
+                            <a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> |
+                            <span>{{ post.crtd_time }}</span>
                         </div>
                         <div class="col-md-2 column">
                             <a>阅读数：</a> | <span>评论</span>
@@ -42,7 +44,9 @@
             </div>
             <hr>
         {% endfor %}
-
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, '.index') }}
+        </div>
     </div>
 {% endblock %}
 

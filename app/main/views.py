@@ -5,7 +5,7 @@ Date : 日期
 Desc : 视图层
 '''
 
-from flask import render_template
+from flask import render_template, request, current_app
 from . import main_bp
 from flask_login import login_required
 from flask_mail import Message
@@ -19,11 +19,22 @@ from app import db
 @main_bp.route('/', methods=['GET', 'POST'])
 @pysnooper.snoop()
 def index():
-    # posts = Post.query.order_by(Post.crtd_time.desc()).all()
-    posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
-                             Post.title, User.user_name, User.user_id).\
-        filter(Post.user_id == User.user_id).order_by(Post.crtd_time.desc()).all()
-    return render_template('main/index.html', posts=posts, title_name='伯乐在线')
+    page = request.args.get('page', 1, type=int)
+
+    pagination = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+                    Post.title, User.user_name, User.user_id).\
+                 filter(Post.user_id == User.user_id). \
+                 order_by(Post.crtd_time.desc()). \
+                 paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+
+    # pagination = Post.query.order_by(Post.crtd_time.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+
+    posts = pagination.items
+
+    # posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+    #                          Post.title, User.user_name, User.user_id).\
+    #     filter(Post.user_id == User.user_id).order_by(Post.crtd_time.desc()).all()
+    return render_template('main/index.html', posts=posts, pagination=pagination, title_name='伯乐在线')
 
 
 @main_bp.route('/send_email/')
