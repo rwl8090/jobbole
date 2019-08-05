@@ -6,44 +6,8 @@
 {% block content %}
 
     <div class="col-md-10 col-md-offset-1">
+        {% include 'main/_post.html' %}
 
-        {% for post in posts %}
-
-            <div class="row clearfix">
-
-                <div class="col-md-12 column">
-
-                    <div class="col-md-12">
-                        <div class="col-md-10 column">
-                            <a class="h3" href="">{{ post.title }}</a>
-                        </div>
-                        <div class="col-md-2 column">
-                            <span class="label label-default">标签</span>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-md-offset-0">
-                        <div class="col-md-12 column">
-                            <p>{{ post.content }}</p>
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-12 col-md-offset-0">
-                        <div class="col-md-10 column">
-                            <a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> |
-                            <span>{{ post.crtd_time }}</span>
-                        </div>
-                        <div class="col-md-2 column">
-                            <a>阅读数：</a> | <span>评论</span>
-                        </div>
-                    </div>
-
-
-                </div>
-
-            </div>
-            <hr>
-        {% endfor %}
         <div class="pagination">
             {{ macros.pagination_widget(pagination, '.index') }}
         </div>

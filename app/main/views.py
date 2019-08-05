@@ -11,7 +11,7 @@ from flask_login import login_required
 from flask_mail import Message
 from app import mail
 import pysnooper
-from app.decorators import admin_required, permission_required
+from app.decorators import permission_required
 from app.models import Permission, Post, User
 from app import db
 
@@ -67,12 +67,26 @@ def insert_roles():
 @main_bp.route('/uplist/<userid>')
 def uplist(userid):
     '''主页用户点击展示个人博客页面等'''
-    posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
-                             Post.title, User.user_name, User.about_me, User.location, User.user_id).\
-        filter(Post.user_id == User.user_id).\
-        filter(Post.user_id == userid).order_by(Post.crtd_time.desc()).all()
 
-    return render_template('main/uplist.html', posts=posts)
+
+    page = request.args.get('page', 1, type=int)
+
+    pagination = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+                    Post.title, User.user_name, User.user_id).\
+                 filter(Post.user_id == User.user_id). \
+                 filter(Post.user_id == userid).\
+                 order_by(Post.crtd_time.desc()). \
+                 paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+
+    posts = pagination.items
+
+    return render_template('main/uplist.html', posts=posts,  pagination=pagination, title_name='伯乐在线')
+    # posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+    #                          Post.title, User.user_name, User.about_me, User.location, User.user_id).\
+    #     filter(Post.user_id == User.user_id).\
+    #     filter(Post.user_id == userid).order_by(Post.crtd_time.desc()).all()
+    #
+    # return render_template('main/uplist.html', posts=posts)
 
 
 
