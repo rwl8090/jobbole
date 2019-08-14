@@ -28,6 +28,7 @@ class Config:
     def init_app(app):
         pass
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
     #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python@127.0.0.1:3306/python'

@@ -14,6 +14,7 @@ from config import config
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View, Subgroup, Separator
 from flask_login import LoginManager
+from flask_pagedown import PageDown
 
 bootstrap = Bootstrap()
 mail = Mail()
@@ -63,6 +64,8 @@ manager = LoginManager()
 # LoginManager 对象的 login_view 属性用于设置登录页面的端点。匿名用户尝试访问受保护的页面时，Flask-Login 将重定向到登录页面
 manager.login_view = 'auth.login'
 manager.login_message = u"没有权限访问，请登录。"   # 定制无访问权限时提示消息
+pagedown = PageDown()
+
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -75,6 +78,7 @@ def create_app(config_name):
     db.init_app(app)
     nav.init_app(app)
     manager.init_app(app)
+    pagedown.init_app(app)
 
     from .main import main_bp as main_blueprint
 

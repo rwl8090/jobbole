@@ -9,6 +9,7 @@ from wtforms import StringField, SubmitField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, Length, Email
 from ..models import User
 from wtforms import ValidationError
+from flask_pagedown.fields import PageDownField
 
 
 #表单类-登录
@@ -82,7 +83,7 @@ class EditUserForm(FlaskForm):
 class EditPostForm(FlaskForm):
     '''编辑博客'''
     title = StringField("标题")
-    content = TextAreaField("内容")
+    content = PageDownField("内容", validators=[DataRequired()])
     submit = SubmitField("新增")
 
 

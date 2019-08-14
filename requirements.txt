@@ -8,3 +8,6 @@ Flask-SQLAlchemy
 flask-nav
 Flask-Moment
 Flask-User
+flask-pagedown
+markdown
+bleach
