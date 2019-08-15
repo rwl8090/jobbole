@@ -224,7 +224,7 @@ def add_post():
         db.session.add(post)
         db.session.commit()
         flash('增加博客成功！！')
-        return redirect(url_for('auth.edit_post'))
+        return redirect(url_for('auth.add_post'))
     return render_template('auth/addpost.html', form=editpostform, title='新增博客')
 
 

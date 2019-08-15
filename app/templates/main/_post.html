@@ -58,7 +58,12 @@
             </div>
             <div class="col-md-12 col-md-offset-0">
                 <div class="col-md-12 column">
-                    <p>{{ post.content }}</p>
+                    <p> {% if post.body_html %}
+                        {{ post.body_html | safe }}
+                    {% else %}
+                        {{ post.content }}
+                    {% endif %} </p>
+                    {#                    <p>{{ post.content }}</p>#}
                 </div>
 
             </div>

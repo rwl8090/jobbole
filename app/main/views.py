@@ -22,11 +22,11 @@ from app import db
 def index():
     page = request.args.get('page', 1, type=int)
 
-    pagination = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+    pagination = db.session.query(Post.post_id, Post.content, Post.body_html, Post.crtd_time,
                     Post.title, User.user_name, User.user_id).\
                  filter(Post.user_id == User.user_id). \
                  order_by(Post.crtd_time.desc()). \
-                 paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+                 paginate(page, per_page=int(current_app.config['FLASKY_POSTS_PER_PAGE']), error_out=False)
 
     # pagination = Post.query.order_by(Post.crtd_time.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
 
@@ -59,12 +59,12 @@ def uplist():
     page = request.args.get('page', 1, type=int)
     userid = request.args.get('userid', type=int)
 
-    pagination = db.session.query(Post.post_id, Post.content, Post.crtd_time,
+    pagination = db.session.query(Post.post_id, Post.content,Post.body_html, Post.crtd_time,
                     Post.title, User.user_name, User.user_id, User.location, User.about_me).\
                  filter(Post.user_id == User.user_id). \
                  filter(Post.user_id == userid).\
                  order_by(Post.crtd_time.desc()). \
-                 paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+                 paginate(page, per_page=int(current_app.config['FLASKY_POSTS_PER_PAGE']), error_out=False)
 
     posts = pagination.items
 
