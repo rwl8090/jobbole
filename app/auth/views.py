@@ -28,8 +28,10 @@ def login():
     loginform = LoginForm()
     if loginform.validate_on_submit():
         session['user_email'] = loginform.user_email.data
-        user = User.query.filter_by(user_email=loginform.user_email.data).first()
-        if user is not None and user.check_passwd_hash(loginform.user_passwd.data):
+        user = User.query.filter_by(
+            user_email=loginform.user_email.data).first()
+        if user is not None and user.check_passwd_hash(
+                loginform.user_passwd.data):
             ''' login_user() 函数的参数是要登录的用户，以及可选的“记住我”
 布尔值，“记住我”也在表单中勾选。如果这个字段的值为 False ，关闭浏览器后用户会话
 就过期了，所以下次用户访问时要重新登录。如果值为 True ，那么会在用户浏览器中写入
@@ -37,7 +39,10 @@ def login():
 使用可选的 REMEMBER_COOKIE_DURATION 配置选项更改这个值'''
             login_user(user, False)
             # return redirect(url_for('main.index'))
-            return redirect(url_for('auth.user', username=current_user.user_name))
+            return redirect(
+                url_for(
+                    'auth.user',
+                    username=current_user.user_name))
         else:
             flash('用户密码验证失败！')
         print(loginform.user_email.data, loginform.user_passwd.data)
@@ -51,20 +56,28 @@ def register():
     rg_form = RegisterForm()  # 注册表单
 
     if rg_form.validate_on_submit():
-        rg_user = User(user_name=rg_form.user_name.data, \
-                       user_email=rg_form.user_email.data, \
+        rg_user = User(user_name=rg_form.user_name.data,
+                       user_email=rg_form.user_email.data,
                        user_passwd=rg_form.user_passwd.data)
 
         try:
             db.session.add(rg_user)
             db.session.commit()
             token = rg_user.generate_confirmation_token()
-            send_email(rg_user.user_email, 'Confirm Your Account', 'email/confirm', user=rg_user, token=token)
+            send_email(
+                rg_user.user_email,
+                'Confirm Your Account',
+                'email/confirm',
+                user=rg_user,
+                token=token)
             flash('恭喜，用户注册成功，请前往邮箱确认！！')
         except Exception as e:
             flash('糟糕，注册失败了，检查下输入用户名或密码！', e)
         return redirect(url_for('.register'))
-    return render_template('auth/register.html', form=rg_form, title_name='用户注册')
+    return render_template(
+        'auth/register.html',
+        form=rg_form,
+        title_name='用户注册')
 
 
 @auth_bp.route('/confirm/<token>/')
@@ -94,7 +107,7 @@ def ulgconfirm(token):
             flash('该用户已确认，请勿重新确认！')
             return redirect(url_for('auth.login'))
         else:
-            user.confirmed=True
+            user.confirmed = True
             db.session.add(user)
             db.session.commit()
             flash('用户已确认，请登录')
@@ -120,16 +133,21 @@ def chpasswd():
     '''登录用户修改密码'''
     passwd_form = ChpasswdForm()
     if passwd_form.validate_on_submit():
-       if current_user.check_passwd_hash(passwd_form.old_user_passwd.data): # 校对原始密码
-           current_user.user_passwd = passwd_form.new_user_passwd.data
-           db.session.add(current_user)
-           db.session.commit()
-           flash('密码已重置，请重新登录')
-           logout_user()
-           return redirect(url_for('auth.login'))
-       else:
-           flash('原始密码错误！！')
-    return render_template('auth/chpasswd.html', form=passwd_form, title_name='修改密码')
+        if current_user.check_passwd_hash(
+                passwd_form.old_user_passwd.data):  # 校对原始密码
+            current_user.user_passwd = passwd_form.new_user_passwd.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash('密码已重置，请重新登录')
+            logout_user()
+            return redirect(url_for('auth.login'))
+        else:
+            flash('原始密码错误！！')
+    return render_template(
+        'auth/chpasswd.html',
+        form=passwd_form,
+        title_name='修改密码')
+
 
 
 @auth_bp.route('/forget_passwd/', methods=['GET', 'POST'])
@@ -138,15 +156,24 @@ def forget_passwd():
     '''忘记密码'''
     form = PasswdResetResponseForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(user_email=form.user_email.data.lower()).first()
+        user = User.query.filter_by(
+            user_email=form.user_email.data.lower()).first()
         token = user.generate_reset_token()
         try:
-            send_email(user.user_email, '重置密码', 'email/reset_passwd', user=user, token=token)
+            send_email(
+                user.user_email,
+                '重置密码',
+                'email/reset_passwd',
+                user=user,
+                token=token)
             flash('重置密码邮件已发送，请注意查收确认！')
-        except:
+        except BaseException:
             flash('邮件发送失败了！！！')
         return redirect(url_for('.forget_passwd'))
-    return render_template('auth/forget_passwd.html', form=form, title_name='忘记密码')
+    return render_template(
+        'auth/forget_passwd.html',
+        form=form,
+        title_name='忘记密码')
 
 
 @auth_bp.route('/reset/<token>', methods=['GET', 'POST'])
@@ -161,7 +188,10 @@ def password_reset(token):
             return redirect(url_for('auth.login'))
         else:
             return redirect(url_for('main.index'))
-    return render_template('auth/reset_passwd.html', form=form, title_name='重置密码')
+    return render_template(
+        'auth/reset_passwd.html',
+        form=form,
+        title_name='重置密码')
 
 
 @auth_bp.before_app_request
@@ -170,9 +200,9 @@ def before_request():
     if current_user.is_authenticated:
         current_user.ping()
         if not current_user.confirmed \
-               and request.endpoint \
-               and request.blueprint != 'auth' \
-               and request.endpoint != 'static':
+                and request.endpoint \
+                and request.blueprint != 'auth' \
+                and request.endpoint != 'static':
             r = redirect(url_for('auth.unconfirmed'))
             return r
 
@@ -207,7 +237,10 @@ def edit_profile():
     edituserform.user_name.data = current_user.user_name
     edituserform.location.data = current_user.location
     edituserform.about_me.data = current_user.about_me
-    return render_template('auth/edit_profile.html', form=edituserform, title='用户编辑')
+    return render_template(
+        'auth/edit_profile.html',
+        form=edituserform,
+        title='用户编辑')
 
 
 @auth_bp.route('/add_post/', methods=['GET', 'POST'])
@@ -225,7 +258,10 @@ def add_post():
         db.session.commit()
         flash('增加博客成功！！')
         return redirect(url_for('auth.add_post'))
-    return render_template('auth/addpost.html', form=editpostform, title='新增博客')
+    return render_template(
+        'auth/addpost.html',
+        form=editpostform,
+        title='新增博客')
 
 
 @auth_bp.route('/list_post/', methods=['GET', 'POST'])
@@ -236,4 +272,33 @@ def list_post():
     posts = Post.query.filter_by(user_id=current_user.user_id).all()
 
     return render_template('auth/listpost.html', posts=posts, title='我的博客')
+
+
+@auth_bp.route('/editpost', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def editpost():
+    '''修改博客'''
+    postid = request.args.get('postid', type=int)
+    editpostform = EditPostForm()
+    post = Post.query.filter_by(post_id=postid).first()
+    if editpostform.validate_on_submit():
+        post.update({'title': editpostform.title.data,
+                    'content': editpostform.content.data,
+                    'last_edit_time' : datetime.now()})
+
+        db.session.add(post)
+        db.session.commit()
+        flash('增加博客成功！！')
+        return redirect(url_for('auth.list_post'))
+
+    editpostform.title.data = post.title
+    editpostform.content.data = post.content
+    return render_template(
+        'auth/addpost.html',
+        form=editpostform,
+        title='修改博客')
+
+
+
 

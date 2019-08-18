@@ -10,7 +10,7 @@
     <ul class="list-group">
         {% for post in posts %}
            <li class="list-group-item"> <a class="h3" href="">{{ post.title }}</a>
-            <a class="btn btn-default" href="">编辑</a></li>
+            <a class="btn btn-default" href="{{ url_for('auth.editpost', postid=post.post_id) }}">编辑</a></li>
 
         {% endfor %}
     </ul>

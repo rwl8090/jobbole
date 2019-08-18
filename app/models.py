@@ -71,10 +71,21 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
-            'Moderator': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE],
-            'Administrator': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE,
-                              Permission.ADMIN],
+            'User': [
+                Permission.FOLLOW,
+                Permission.COMMENT,
+                Permission.WRITE],
+            'Moderator': [
+                Permission.FOLLOW,
+                Permission.COMMENT,
+                Permission.WRITE,
+                Permission.MODERATE],
+            'Administrator': [
+                Permission.FOLLOW,
+                Permission.COMMENT,
+                Permission.WRITE,
+                Permission.MODERATE,
+                Permission.ADMIN],
         }
         default_role = 'User'
         for r in roles:
@@ -104,20 +115,18 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.now)
     post = db.relationship('Post', backref='post', lazy='dynamic')
 
-
     def ping(self):
         '''更新用户最后登录时间'''
         self.last_seen = datetime.now()
         db.session.add(self)
         db.session.commit()
 
-
     @staticmethod
     def reset_passwd(token, new_password):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token.encode('utf-8'))
-        except:
+        except BaseException:
             return False
         user = User.query.get(data.get('reset'))
         if user is None:
@@ -140,7 +149,7 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token.encode('utf-8'))
-        except:
+        except BaseException:
             return False
 
         if data.get('confirm') != self.user_id:
@@ -155,7 +164,7 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token.encode('utf-8'))
-        except:
+        except BaseException:
             return False
         return data.get('confirm')
 
@@ -182,7 +191,8 @@ class User(UserMixin, db.Model):
         super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.user_email == current_app.config['FLASKY_ADMIN']:
-                self.role = Role.query.filter_by(role_name='Administrator').first()
+                self.role = Role.query.filter_by(
+                    role_name='Administrator').first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
 
@@ -193,12 +203,15 @@ class User(UserMixin, db.Model):
         return self.can(Permission.ADMIN)
 
 
-######################################################################################################
+##########################################################################
 # 文章内容
 class Post(db.Model):
     __tablename__ = 'post'
     post_id = db.Column(db.Integer, primary_key=True, comment='文章id')
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), comment='用户ID')
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.user_id'),
+        comment='用户ID')
     content = db.Column(db.Text, comment='文章内容')
     crtd_time = db.Column(db.DateTime, comment='创作时间')
     last_edit_time = db.Column(db.Date, comment='最后一次修改时间')
@@ -208,10 +221,24 @@ class Post(db.Model):
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
+        attrs = {
+            '*': ['class'],
+            'a': ['href', 'rel'],
+            'img': ['src', 'alt'],
+        }
+
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul', 'img',
                         'h1', 'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'), tags=allowed_tags, strip=True))
+        target.body_html = bleach.linkify(
+            bleach.clean(
+                markdown(
+                    value,
+                    output_format='html'),
+                tags=allowed_tags,
+                attributes=attrs,
+                strip=True))
+
 
 # on_changed_body() 函数注册在 body 字段上，是 SQLAlchemy“set”事件的监听程序，这
 # 意味着只要 body 字段设了新值，这个函数就会自动被调用。on_changed_body() 函数把
@@ -220,14 +247,14 @@ class Post(db.Model):
 db.event.listen(Post.content, 'set', Post.on_changed_body)
 
 
-
-
-
 # 文章评论
 class Comment(db.Model):
     __tablename__ = 'comment'
     comment_id = db.Column(db.Integer, primary_key=True, comment='评论id')
-    post_id = db.Column(db.Integer, db.ForeignKey('post.post_id'), comment='文章id')
+    post_id = db.Column(
+        db.Integer,
+        db.ForeignKey('post.post_id'),
+        comment='文章id')
     comment_content = db.Column(db.Text, comment='评论内容')
     crtd_time = db.Column(db.String, comment='评论时间')
 
@@ -244,12 +271,13 @@ class Post2Comment(db.Model):
     __tablename__ = 'post2comment'
     pc_id = db.Column(db.Integer, primary_key=True, comment='id')
     post_id = db.Column(db.Integer, comment='文章id')
-    type_id = db.Column(db.Integer, db.ForeignKey('ptype.type_id'), comment='评论id')
+    type_id = db.Column(
+        db.Integer,
+        db.ForeignKey('ptype.type_id'),
+        comment='评论id')
     crtd_time = db.Column(db.String, comment='记录时间')
 
-##################################################################################################
-
-
+##########################################################################
 
 
 class AnonymousUser(AnonymousUserMixin):
