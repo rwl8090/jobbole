@@ -43,7 +43,7 @@ class Role(db.Model):
     default = db.Column(db.Boolean, default=False, index=True)
     permission = db.Column(db.Integer)
 
-    user = db.relationship('User', backref='role', lazy='dynamic')
+    user = db.relationship('User', backref='role', lazy='select')
 
     def __init__(self, **kwargs):
         super(Role, self).__init__(**kwargs)
@@ -215,7 +215,7 @@ class Post(db.Model):
     content = db.Column(db.Text, comment='文章内容')
     crtd_time = db.Column(db.DateTime, comment='创作时间')
     last_edit_time = db.Column(db.Date, comment='最后一次修改时间')
-    title = db.Column(db.String, comment='文章标题')
+    title = db.Column(db.String(200), comment='文章标题')
 
     body_html = db.Column(db.Text)
 
@@ -257,14 +257,14 @@ class Comment(db.Model):
         db.ForeignKey('post.post_id'),
         comment='文章id')
     comment_content = db.Column(db.Text, comment='评论内容')
-    crtd_time = db.Column(db.String, comment='评论时间')
+    crtd_time = db.Column(db.String(40), comment='评论时间')
 
 
 # 文章类型
 class Ptype(db.Model):
     __tablename__ = 'ptype'
     type_id = db.Column(db.Integer, primary_key=True, comment='类型id')
-    type_name = db.Column(db.String, comment='文章类型名称')
+    type_name = db.Column(db.String(200), comment='文章类型名称')
 
 
 # 文章评论与类型
@@ -276,7 +276,7 @@ class Post2Comment(db.Model):
         db.Integer,
         db.ForeignKey('ptype.type_id'),
         comment='评论id')
-    crtd_time = db.Column(db.String, comment='记录时间')
+    crtd_time = db.Column(db.String(40), comment='记录时间')
 
 ##########################################################################
 
