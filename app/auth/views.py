@@ -6,7 +6,7 @@ Desc : 描述内容
 '''
 
 
-from flask import render_template, session, redirect, url_for, flash, request
+from flask import render_template, session, redirect, url_for, flash, request, abort
 from . import auth_bp
 from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm, EditUserForm, EditPostForm
 from ..models import User, Post
@@ -280,17 +280,24 @@ def list_post():
 def editpost():
     '''修改博客'''
     postid = request.args.get('postid', type=int)
-    editpostform = EditPostForm()
-    post = Post.query.filter_by(post_id=postid).first()
-    if editpostform.validate_on_submit():
-        post.update({'title': editpostform.title.data,
-                    'content': editpostform.content.data,
-                    'last_edit_time' : datetime.now()})
+    post = Post.query.get_or_404(postid)
+    if current_user.user_id != post.user_id:
+        abort(403)
 
+    editpostform = EditPostForm()
+    if editpostform.validate_on_submit():
+        post.title = editpostform.title.data
+        post.content = editpostform.content.data
+        post.last_edit_time = datetime.now()
+        # Post.query.filter_by(post_id=postid).update({'title': editpostform.title.data,
+        #                                              'content': editpostform.content.data,
+        #                                              'last_edit_time' : datetime.now()})
         db.session.add(post)
         db.session.commit()
         flash('增加博客成功！！')
         return redirect(url_for('auth.list_post'))
+
+    # post = Post.query.filter_by(post_id=postid).first()
 
     editpostform.title.data = post.title
     editpostform.content.data = post.content

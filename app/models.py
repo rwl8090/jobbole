@@ -247,6 +247,7 @@ class Post(db.Model):
 db.event.listen(Post.content, 'set', Post.on_changed_body)
 
 
+
 # 文章评论
 class Comment(db.Model):
     __tablename__ = 'comment'
