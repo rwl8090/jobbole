@@ -294,8 +294,8 @@ def editpost():
         #                                              'last_edit_time' : datetime.now()})
         db.session.add(post)
         db.session.commit()
-        flash('增加博客成功！！')
-        return redirect(url_for('auth.list_post'))
+        flash('博客保存成功！！')
+        return redirect(url_for('auth.editpost', postid=post.user_id))
 
     # post = Post.query.filter_by(post_id=postid).first()
 

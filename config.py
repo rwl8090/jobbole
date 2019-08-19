@@ -32,6 +32,6 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python_*-@192.168.1.32:3306/python'
-    #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'jobbole.db')
+    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python_*-@192.168.1.32:3306/python'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'jobbole.db')
 config = {'development' : DevelopmentConfig}
