@@ -10,11 +10,11 @@
         <property name="enable_load_extension" value="true" />
       </driver-properties>
     </data-source>
-    <data-source source="LOCAL" name="python@192.168.1.32" uuid="632ace7c-070d-4b84-9502-dc6ef276577d">
+    <data-source source="LOCAL" name="python@192.168.18.159" uuid="632ace7c-070d-4b84-9502-dc6ef276577d">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://192.168.1.32:3306/python</jdbc-url>
+      <jdbc-url>jdbc:mysql://192.168.18.159:3306/python</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
         <property name="zeroDateTimeBehavior" value="convertToNull" />

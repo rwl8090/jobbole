@@ -295,7 +295,7 @@ def editpost():
         db.session.add(post)
         db.session.commit()
         flash('博客保存成功！！')
-        return redirect(url_for('auth.editpost', postid=post.user_id))
+        return redirect(url_for('auth.editpost', postid=postid))
 
     # post = Post.query.filter_by(post_id=postid).first()
 
