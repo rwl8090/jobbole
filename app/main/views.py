@@ -18,6 +18,7 @@ from app import db
 
 
 @main_bp.route('/', methods=['GET', 'POST'])
+@login_required
 @pysnooper.snoop()
 def index():
     page = request.args.get('page', 1, type=int)

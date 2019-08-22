@@ -7,11 +7,11 @@ Desc : 邮件
 
 from app import mail
 from flask_mail import Message
-from flask import render_template
+from flask import render_template, current_app
 from threading import Thread
-#from jobbole import app
-import app
 import pysnooper
+import os
+
 
 @pysnooper.snoop()
 def send_async_email(app, msg):
@@ -21,6 +21,7 @@ def send_async_email(app, msg):
 
 @pysnooper.snoop()
 def send_email(to, subject, template, **kwargs):
+    app = current_app._get_current_object()
     msg = Message(#app.config['MAIL_SUBJECT_PREFIX'] +
                   subject,
                   sender=app.config['MAIL_USERNAME'],
