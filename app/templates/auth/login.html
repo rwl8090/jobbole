@@ -1,52 +1,65 @@
 {% extends 'main/base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'main/_wtf.html' as wtf %}
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ title_name }}{% endblock %}
 {% block content %}
-    <div class="col-md-3 col-md-offset-4" align="center">
-        <h3>{{ title_name }}</h3>
-    </div>
+    <p></p>
+    <div class="col-md-3 offset-md-4">
+        <h3 class="text-xl-center">{{ title_name }}</h3>
 
-    <form method="POST" class="form-horizontal", role="form">
-        <div class="col-md-3 col-md-offset-4">
-{#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
-            {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.user_email, placeholder='邮箱') }}
-            {{ wtf.form_field(form.user_passwd, placeholder='密码') }}
-            {{ wtf.form_field(form.submit) }}
-            <a href="{{ url_for('auth.forget_passwd') }}">  忘记密码</a>
-        </div>
-    </form>
 
-    <div class="col-md-3 col-md-offset-4">
-        {% for message in get_flashed_messages() %}
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ message }}
+        <form method="POST" class="form-horizontal needs-validation" role="form">
+            {#            {{ form.hidden_tag() }}#}
+            {#            <div class="input-group mb-3">#}
+            {#                <div class="input-group-prepend">#}
+            {#                    <span class="input-group-text" name="user_name" id="basic-addon1">邮箱</span>#}
+            {#                </div>#}
+            {#                <input type="text" class="form-control" name="user_email" placeholder="Email" aria-describedby="basic-addon">#}
+            {#            </div>#}
+            {##}
+            {#            <div class="input-group mb-3">#}
+            {#                <div class="input-group-prepend">#}
+            {#                    <span class="input-group-text" id="basic-addon1">密码</span>#}
+            {#                </div>#}
+            {#                <input type="password" class="form-control" placeholder="Passwd" aria-describedby="basic-addon">#}
+            {#            </div>#}
+            {##}
+            {#            <button type="submit" name="submit" class="btn btn-primary">登录</button>#}
+
+            {#                    <div class="col-md-12 ">#}
+            {#                                {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
+            {#                        {{ form.hidden_tag() }}#}
+            {#                   {{ wtf.form_field(form.user_email, placeholder='邮箱') }}#}
+            {#                        {{ wtf.form_field(form.user_passwd, placeholder='密码') }}#}
+            {#                        {{ wtf.form_field(form.submit) }}#}
+            {#                        <a href="{{ url_for('auth.forget_passwd') }}">  忘记密码</a>#}
+            {#                    </div>#}
+
+            <div class="col-md-12 ">
+                {{ form.hidden_tag() }}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">{{ form.user_email.label(class="input-group-text") }}</div>
+                    {{ form.user_email(placeholder='邮箱', class='form-control') }}
+                  </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">{{ form.user_passwd.label(class="input-group-text") }}</div>
+                    {{ form.user_passwd(placeholder='密码', class='form-control') }}
+                </div>
+                <button type="submit" name="submit" class="btn btn-primary">登录</button>
+                <a class="btn btn-link" href="{{ url_for('auth.forget_passwd') }}"> 忘记密码</a>
             </div>
-            </div> {% endfor %}
-{#    <form method="POST" class="form-horizontal" role="form">#}
-{#        <div class="col-md-4 col-md-offset-4">#}
-            {#        {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
-{#            {{ wtf.form_field(form.name) }}#}
-{#            {{ wtf.form_field(form.passwd) }}#}
-{#            {{ wtf.form_field(form.submit) }}#}
-{##}
-{#        </div>#}
-{#    </form>  #}
+
+
+        </form>
+
+        <div class="col-md-12 ">
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+                </div> {% endfor %}
+    </div>
 {% endblock %}
-
-
-
-
-
-{#{% block content %}#}
-{#    <form method="POST" class="form-horizontal" role="form">#}
-{#        <div class="form-group"><div class="col-md-4 col-md-offset-4"> {{ wtf.form_field(form.name) }} </div></div>#}
-{#        <div class="form-group"><div class="col-md-4 col-md-offset-4"> {{ wtf.form_field(form.passwd) }} </div></div>#}
-{#        <div class="form-group"><div class="col-md-4 col-md-offset-4">{{ wtf.form_field(form.submit) }}</div></div>#}
-{##}
-{#    </form>#}
-{#{% endblock %}#}
 
 

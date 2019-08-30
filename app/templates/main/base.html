@@ -5,7 +5,7 @@
 {% block styles %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    {#    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">#}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     {#    <link rel="stylesheet" href="{{ url_for('static', filename='css/mycss.css') }}">#}
 {% endblock %}
 
@@ -13,7 +13,7 @@
 {#    <div class="col-md-10 col-lg-offset-1">   {{ nav.top.render() }}    </div> #}
 {#{% endblock %}#}
 {% block navbar %}
-               {% include 'main/_navbar.html' %}
+  {% include 'main/_navbar.html' %}
 
 
 

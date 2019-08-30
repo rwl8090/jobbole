@@ -5,15 +5,15 @@
         <div class="col-md-12 column">
 
             <div class="col-md-12">
-                <div class="col-md-10 column">
+                <div class="col-md-10 row">
                     <a class="h3" href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>
                 </div>
-                <div class="col-md-2 column">
+                <div class="col-md-2 row">
                     <span class="label label-default">标签</span>
                 </div>
             </div>
-            <div class="col-md-12 col-md-offset-0">
-                <div class="col-md-12 column">
+            <div class="col-md-12 ">
+                <div class="col-md-12 row">
 {#                    <p> {% if post.body_html %}#}
 {#                        {{ post.body_html | safe }}#}
 {#                    {% else %}#}
@@ -24,12 +24,12 @@
 
             </div>
 
-            <div class="col-md-12 col-md-offset-0">
-                <div class="col-md-10 column">
+            <div class="col-md-12 ">
+                <div class="col-md-10 row">
                     <a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> |
                     <span>{{ post.crtd_time.strftime("%Y-%m-%d %H:%M:%S") }}</span>
                 </div>
-                <div class="col-md-2 column">
+                <div class="col-md-2 row">
                     <a>阅读数：</a> | <span>评论</span>
                 </div>
             </div>
