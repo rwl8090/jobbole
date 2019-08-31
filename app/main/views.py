@@ -127,3 +127,9 @@ def get_post(postid):
     return render_template('main/post.html', post=post, title_name='博客')
 
 
+@main_bp.route()
+@pysnooper.snoop()
+def search_post():
+    '''搜索博客'''
+
+    pass

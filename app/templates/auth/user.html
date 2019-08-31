@@ -1,19 +1,19 @@
 {% extends 'main/base.html' %}
 {% block title %}Hello - {{ user.user_name }}{% endblock %}
 {% block content %}
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6 offset-md-3">
 
         <h1>用户名： {{ user.user_name }}</h1>
         <h2>用户邮箱： {{ user.user_email }}</h2>
         <h2>用户权限ID： {{ user.role_id }}</h2>
-        <h2>用户最后一次登录时间： {{ user.last_seen }}</h2>
+        <h2>用户最后一次登录时间： {{ user.last_seen.strtf }}</h2>
         <h2>地址： {{ user.location }}</h2>
         <h2>关于我： {{ user.about_me }}</h2>
-        <a href="{{ url_for("auth.edit_profile") }}" class="btn btn-default">修改资料</a>
+        <a href="{{ url_for("auth.edit_profile") }}" class="btn btn-outline-primary">修改资料</a>
 
 
     </div>
-    <div class="col-md-3 col-md-offset-4">
+    <div class="col-md-3 offset-md-4">
         {% for message in get_flashed_messages() %}
             <div class="alert alert-warning">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>

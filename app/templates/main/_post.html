@@ -1,42 +1,61 @@
-{% for post in posts %}
+<ul class="list-unstyled">
+    {% for post in posts %}
 
-    <div class="row clearfix">
 
-        <div class="col-md-12 column">
+        <li class="media media">
+{#            <img src="/static/img/person-icon.jpg" class="rounded-circle" style="height: 60px" alt="...">#}
+            <div class="media-body">
+                {#      <h5 class="mt-0 mb-1">List-based media object</h5>#}
+                <a class="h4" style="color:#3D3D3D"
+                   href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>
+                <div class="text-right"><span class="badge badge-secondary ">标签</span></div>
 
-            <div class="col-md-12">
-                <div class="col-md-10 row">
-                    <a class="h3" href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>
-                </div>
-                <div class="col-md-2 row">
-                    <span class="label label-default">标签</span>
-                </div>
-            </div>
-            <div class="col-md-12 ">
                 <div class="col-md-12 row">
-{#                    <p> {% if post.body_html %}#}
-{#                        {{ post.body_html | safe }}#}
-{#                    {% else %}#}
-{#                        {{ post.content }}#}
-{#                    {% endif %} </p>#}
-                    {#                    <p>{{ post.content }}</p>#}
-                </div>
-
-            </div>
-
-            <div class="col-md-12 ">
-                <div class="col-md-10 row">
-                    <a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> |
-                    <span>{{ post.crtd_time.strftime("%Y-%m-%d %H:%M:%S") }}</span>
-                </div>
-                <div class="col-md-2 row">
-                    <a>阅读数：</a> | <span>评论</span>
+                    <div class="col-md-6">
+                         <img src="/static/img/person-icon.jpg" class="rounded-circle" style="height: 20px" alt="..."><a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> |
+                        <span>{{ post.crtd_time.strftime("%Y-%m-%d %H:%M:%S") }}</span></div>
+                    <div class="col-md-6 text-right "><a class="small">阅读数：</a> | <span class="small">评论</span></div>
                 </div>
             </div>
+        </li>
+
+        {#        <div class="col-md-12 column">#}
+        {##}
+        {#            <div class="col-md-12">#}
+        {#                <div class="col-md-10 row">#}
+        {#                    <a class="h3" href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>#}
+        {#                </div>#}
+        {#                <div class="col-md-2 row">#}
+        {#                    <span class="label label-default">标签</span>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#            <div class="col-md-12 ">#}
+        {#                <div class="col-md-12 row">#}
+        {#                    <p> {% if post.body_html %}#}
+        {#                        {{ post.body_html | safe }}#}
+        {#                    {% else %}#}
+        {#                        {{ post.content }}#}
+        {#                    {% endif %} </p>#}
+        {#                    <p>{{ post.content }}</p>#}
+        {#                </div>#}
+        {##}
+        {#            </div>#}
+        {##}
+        {#            <div class="col-md-12 ">#}
+        {#                <div class="col-md-10 row">#}
+        {#                    <a href="{{ url_for('main.uplist', userid=post.user_id) }}">{{ post.user_name }}</a> |#}
+        {#                    <span>{{ post.crtd_time.strftime("%Y-%m-%d %H:%M:%S") }}</span>#}
+        {#                </div>#}
+        {#                <div class="col-md-2 row">#}
+        {#                    <a>阅读数：</a> | <span>评论</span>#}
+        {#                </div>#}
+        {#            </div>#}
+        {##}
+        {##}
+        {#        </div>#}
 
 
-        </div>
+        <hr style="height:1px;border-top:1px solid #E0E0E0;"/>
+    {% endfor %}
 
-    </div>
-    <hr style="height:1px;border-top:1px solid #E0E0E0;" />
-{% endfor %}
+</ul>

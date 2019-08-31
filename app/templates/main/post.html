@@ -1,15 +1,17 @@
 {% extends 'main/base.html' %}
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ post[0].user_name }}的博客空间{% endblock %}
+
+<div class="container">
 {% block content %}
 
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-10 offset-md-1 row">
 
 
         <div class="col-md-2">
             {#     个人信息       #}
-            <img src="https://avatar.csdn.net/0/3/C/3_cainiao_python.jpg" class="img-circle" style="height: 60px;">
-            <span class="h4" style="vertical-align:middle ;padding-left: 15px">{{ post.user_name }}</span>
+            <img src="/static/img/person-icon.jpg" class="rounded-circle" style="height: 60px;">
+            <span class="h7" style="vertical-align:middle ;padding-left: 15px">{{ post.user_name }}</span>
             <hr>
             <span>来自：{{ post.location }}</span>
             <hr>
@@ -35,5 +37,5 @@
 
 
 {% endblock %}
-
+</div>
 
