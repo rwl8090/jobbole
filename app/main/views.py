@@ -7,7 +7,6 @@ Date : 日期
 Desc : 视图层
 '''
 
-
 from flask import render_template, request, current_app
 from . import main_bp
 from flask_login import login_required
@@ -15,6 +14,7 @@ import pysnooper
 from app.decorators import permission_required
 from app.models import Permission, Post, User
 from app import db
+from .forms import SearchForm
 
 
 @main_bp.route('/', methods=['GET', 'POST'])
@@ -30,12 +30,12 @@ def index():
         Post.crtd_time,
         Post.title,
         User.user_name,
-        User.user_id). filter(
-        Post.user_id == User.user_id). order_by(
-            Post.crtd_time.desc()). paginate(
-                page,
-                per_page=int(
-                    current_app.config['FLASKY_POSTS_PER_PAGE']),
+        User.user_id).filter(
+        Post.user_id == User.user_id).order_by(
+        Post.crtd_time.desc()).paginate(
+        page,
+        per_page=int(
+            current_app.config['FLASKY_POSTS_PER_PAGE']),
         error_out=False)
 
     # pagination = Post.query.order_by(Post.crtd_time.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
@@ -82,13 +82,13 @@ def uplist():
         User.user_name,
         User.user_id,
         User.location,
-        User.about_me). filter(
-        Post.user_id == User.user_id). filter(
-            Post.user_id == userid). order_by(
-                Post.crtd_time.desc()). paginate(
-                    page,
-                    per_page=int(
-                        current_app.config['FLASKY_POSTS_PER_PAGE']),
+        User.about_me).filter(
+        Post.user_id == User.user_id).filter(
+        Post.user_id == userid).order_by(
+        Post.crtd_time.desc()).paginate(
+        page,
+        per_page=int(
+            current_app.config['FLASKY_POSTS_PER_PAGE']),
         error_out=False)
 
     posts = pagination.items
@@ -120,16 +120,42 @@ def get_post(postid):
         User.user_name,
         User.user_id,
         User.location,
-        User.about_me). filter(
-        Post.post_id == postid). filter(
-            Post.user_id == User.user_id).first()
+        User.about_me).filter(
+        Post.post_id == postid).filter(
+        Post.user_id == User.user_id).first()
 
     return render_template('main/post.html', post=post, title_name='博客')
 
 
-@main_bp.route()
+@main_bp.route('/search_post/<key_word>', methods=['GET', 'POST'])
 @pysnooper.snoop()
-def search_post():
+def search_post(key_word):
     '''搜索博客'''
+    page = request.args.get('page', 1, type=int)
+    searchform = SearchForm()
 
-    pass
+    if searchform.validate_on_submit():
+        pagination = db.session.query(
+            Post.post_id,
+            Post.content,
+            Post.body_html,
+            Post.crtd_time,
+            Post.title,
+            User.user_name,
+            User.user_id).filter(
+            Post.user_id == User.user_id)\
+            .filter(Post.title.contains(key_word) or Post.body_html.contains(key_word))\
+            .order_by(
+            Post.crtd_time.desc()).paginate(
+            page,
+            per_page=int(
+                current_app.config['FLASKY_POSTS_PER_PAGE']),
+            error_out=False)
+
+        posts = pagination.items
+
+        return render_template(
+            'main/index.html',
+            posts=posts,
+            pagination=pagination,
+            title_name='伯乐在线')
