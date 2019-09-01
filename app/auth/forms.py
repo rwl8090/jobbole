@@ -63,11 +63,11 @@ class RegisterForm(FlaskForm):
     #user_login_name = StringField("登录用户名：", validators=[DataRequired(message='名字忘填了')])
     user_email = StringField(
         "注册邮箱：", validators=[
-            DataRequired(), Length(
-                1, 64), Email()])
+            DataRequired(message='邮箱不能为空！！！'), Length(
+                1, 64, message='邮箱长度有误'), Email(message='邮箱格式有误。')])
     user_passwd = PasswordField(
         '密码：', validators=[
-            DataRequired(), EqualTo(
+            DataRequired(message='密码不能为空！！'), EqualTo(
                 'user_passwd_confirm', message='密码必须一致'), Length(
                 8, message='密码不能低于8位')])
     user_passwd_confirm = PasswordField(
