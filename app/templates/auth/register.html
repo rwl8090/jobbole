@@ -1,24 +1,68 @@
 {% extends 'main/base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
+{#{% import 'bootstrap/wtf.html' as wtf %}#}
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ title_name }}{% endblock %}
 {% block content %}
-        <div class="col-md-3 offset-md-4" align="center">
+    <div class="col-md-3 offset-md-4" align="center">
         <h3>{{ title_name }}</h3>
     </div>
-    <form method="POST" class="form-horizontal" role="form">
-        <div class="col-md-3 offset-md-4">
+    <div class="col-md-3 offset-md-4">
+        <form method="POST" class="" role="form">
+
             {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.user_name, placeholder='用户名') }}
-            {{ wtf.form_field(form.user_email, placeholder='邮箱') }}
-            {{ wtf.form_field(form.user_passwd, placeholder='密码') }}
-            {{ wtf.form_field(form.user_passwd_confirm, placeholder='确认密码') }}
-            {{ wtf.form_field(form.submit, class='btn btn-primary') }}
-            <a href="{{ url_for('auth.login') }}" class="btn btn-link">登录</a>
 
-        </div>
-    </form>
+            <div class="form-group row">
+                {{ form.user_name.label(class="col-lg-4 col-sm-4 col-form-label") }}
+                <div class="col-lg-8 col-sm-8">
+                    {{ form.user_name(class="form-control") }}
+
+                    <div class="invalid-feedback">
+                        {{ form.user_name.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                {{ form.user_email.label(class="col-lg-4 col-sm-4 col-form-label") }}
+                <div class="col-lg-8 col-sm-8">
+                    {{ form.user_email(class="form-control") }}</div>
+            </div>
+            <div class="form-group row">
+                {{ form.user_passwd.label(class="col-lg-4 col-sm-4 col-form-label") }}
+                <div class="col-lg-8 col-sm-8">
+                    {{ form.user_passwd(class="form-control") }}</div>
+                {% if form.user_passwd.errors %}
+                    {% for item in form.user_passwd.errors %}
+                    <div class="btn btn-danger">
+                        {{ item }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group row">
+                {{ form.user_passwd_confirm.label(class="col-lg-4 col-sm-4 col-form-label") }}
+                <div class="col-lg-8 col-sm-8">
+                    {{ form.user_passwd_confirm(class="form-control") }}</div>
+            </div>
+            <div class="form-group row">
+                {#                {{ form.user_passwd_confirm.label(class="col-lg-4 col-sm-4 col-form-label") }}#}
+                <div class="col-lg-8 col-sm-8 offset-lg-4 offset-sm-4">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-link">登录</a>
+                </div>
+            </div>
+            {#            {{ wtf.form_field(form.user_name, placeholder='用户名') }}#}
+            {#            {{ wtf.form_field(form.user_email, placeholder='邮箱') }}#}
+            {#            {{ wtf.form_field(form.user_passwd, placeholder='密码') }}#}
+            {#            {{ wtf.form_field(form.user_passwd_confirm, placeholder='确认密码') }}#}
+            {#            {{ wtf.form_field(form.submit, class='btn btn-primary') }}#}
+            {#            <a href="{{ url_for('auth.login') }}" class="btn btn-link">登录</a>#}
+
+
+        </form>
+    </div>
+
     <div class="col-md-3 offset-md-4">
         {% for message in get_flashed_messages() %}
             <div class="alert alert-warning">
