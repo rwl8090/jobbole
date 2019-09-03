@@ -1,0 +1,15 @@
+{% macro form_widget(form) %}
+    <div class="form-group row">
+        {{ form.label(class="col-lg-4 col-sm-4 col-form-label") }}
+        <div class="col-lg-8 col-sm-8">
+            {{ form(class="form-control") }}
+            {% if form.errors %}
+                {% for item in form.errors %}
+                    <div class="text-danger">
+                        {{ item }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}

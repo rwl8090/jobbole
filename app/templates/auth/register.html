@@ -2,64 +2,21 @@
 {#{% import 'bootstrap/wtf.html' as wtf %}#}
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ title_name }}{% endblock %}
+{% import "macro/_macro_simple_form.html" as macros_form %}
 {% block content %}
     <div class="col-md-3 offset-md-4" align="center">
         <h3>{{ title_name }}</h3>
     </div>
-    <div class="col-md-3 offset-md-4">
+    <div class="col-md-4 offset-md-4">
         <form method="POST" class="needs-validation" role="form" novalidate>
 
             {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
+            {{ macros_form.form_widget(form.user_name) }}
+            {{ macros_form.form_widget(form.user_email) }}
+            {{ macros_form.form_widget(form.user_passwd) }}
+            {{ macros_form.form_widget(form.user_passwd_confirm) }}
 
-            <div class="form-group row">
-                {{ form.user_name.label(class="col-lg-4 col-sm-4 col-form-label") }}
-                <div class="col-lg-8 col-sm-8">
-                    {{ form.user_name(class="form-control") }}
-                    {% if form.user_name.errors %}
-                        {% for item in form.user_name.errors %}
-                            <div class="btn btn-danger">
-                                {{ item }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form-group row">
-                {{ form.user_email.label(class="col-lg-4 col-sm-4 col-form-label") }}
-                <div class="col-lg-8 col-sm-8">
-                    {{ form.user_email(class="form-control") }}{% if form.user_email.errors %}
-                        {% for item in form.user_email.errors %}
-                            <div class="btn btn-danger">
-                                {{ item }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}</div>
-            </div>
-            <div class="form-group row">
-                {{ form.user_passwd.label(class="col-lg-4 col-sm-4 col-form-label") }}
-                <div class="col-lg-8 col-sm-8">
-                    {{ form.user_passwd(class="form-control") }}
-                    {% if form.user_passwd.errors %}
-                        {% for item in form.user_passwd.errors %}
-                            <div class="btn btn-danger">
-                                {{ item }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}</div>
-            </div>
-
-            <div class="form-group row">
-                {{ form.user_passwd_confirm.label(class="col-lg-4 col-sm-4 col-form-label") }}
-                <div class="col-lg-8 col-sm-8">
-                    {{ form.user_passwd_confirm(class="form-control") }} {% if form.user_passwd_confirm.errors %}
-                        {% for item in form.user_passwd_confirm.errors %}
-                            <div class="btn btn-danger">
-                                {{ item }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}</div>
-            </div>
             <div class="form-group row">
                 {#                {{ form.user_passwd_confirm.label(class="col-lg-4 col-sm-4 col-form-label") }}#}
                 <div class="col-lg-8 col-sm-8 offset-lg-4 offset-sm-4">
@@ -67,13 +24,6 @@
                     <a href="{{ url_for('auth.login') }}" class="btn btn-link">登录</a>
                 </div>
             </div>
-            {#            {{ wtf.form_field(form.user_name, placeholder='用户名') }}#}
-            {#            {{ wtf.form_field(form.user_email, placeholder='邮箱') }}#}
-            {#            {{ wtf.form_field(form.user_passwd, placeholder='密码') }}#}
-            {#            {{ wtf.form_field(form.user_passwd_confirm, placeholder='确认密码') }}#}
-            {#            {{ wtf.form_field(form.submit, class='btn btn-primary') }}#}
-            {#            <a href="{{ url_for('auth.login') }}" class="btn btn-link">登录</a>#}
-
 
         </form>
     </div>
@@ -87,14 +37,12 @@
                 // Loop over them and prevent submission
                 var validation = Array.prototype.filter.call(forms, function (form) {
                     form.addEventListener('submit', function (event) {
-                        {#alert('click once');#}
                         if (form.checkValidity() === false) {
                             event.preventDefault();
                             event.stopPropagation();
                         }
 
                         form.classList.add('was-validated');
-                        {#alert('click 0000000000');#}
                     }, false);
                 });
             }, false);
@@ -109,26 +57,6 @@
 
         {% endfor %}
     </div>
-    {#    <form method="POST" class="form-horizontal" role="form">#}
-    {#        <div class="col-md-4 col-md-offset-4">#}
-    {#        {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
-    {#            {{ wtf.form_field(form.name) }}#}
-    {#            {{ wtf.form_field(form.passwd) }}#}
-    {#            {{ wtf.form_field(form.submit) }}#}
-    {##}
-    {#        </div>#}
-    {#    </form>  #}
-
-
-
 
 {% endblock %}
 
-{#{% block content %}#}
-{#    <form method="POST" class="form-horizontal" role="form">#}
-{#        <div class="form-group"><div class="col-md-4 col-md-offset-4"> {{ wtf.form_field(form.name) }} </div></div>#}
-{#        <div class="form-group"><div class="col-md-4 col-md-offset-4"> {{ wtf.form_field(form.passwd) }} </div></div>#}
-{#        <div class="form-group"><div class="col-md-4 col-md-offset-4">{{ wtf.form_field(form.submit) }}</div></div>#}
-{##}
-{#    </form>#}
-{#{% endblock %}#}
