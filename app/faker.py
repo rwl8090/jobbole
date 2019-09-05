@@ -49,11 +49,11 @@ def posts(count=100):
         p = Post(content=faker.text(),
                  title=faker.text()[1:15],
                  crtd_time=faker.date_time(),
-                 user_id=1)
+                 user_id=u.user_id)
         db.session.add(p)
     db.session.commit()
 
 
-users(10)
-posts(100)
-Role.insert_roles()
+# users(10)
+# posts(100)
+# Role.insert_roles()
