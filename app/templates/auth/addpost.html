@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% import "macro/_macro_simple_form.html" as macros_form %}
 {#{% import 'bootstrap/wtf.html' as wtf %}#}
 {% block title %}{{ title }}{% endblock %}
 {% block scripts %}
@@ -6,20 +7,28 @@
     {{ pagedown.include_pagedown() }}
 {% endblock %}
 {% block content %}
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6 offset-md-3">
 
-        <form method="POST" class="form-horizontal" , role="form">
+        <form method="POST" class="form-horizontal needs-validation" novalidate role="form">
             <div class="col-md-12 col-md-offset-0">
                 {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
                 {{ form.hidden_tag() }}
-                {{ wtf.form_field(form.title) }}
-                {{ wtf.form_field(form.content, placeholder='内容') }}
-                {{ wtf.form_field(form.submit) }}
+                {#                {{ wtf.form_field(form.title) }}#}
+                {#                {{ wtf.form_field(form.content, placeholder='内容') }}#}
+                {#                {{ wtf.form_field(form.submit) }}#}
+                {{ macros_form.form_widget(form.title) }}
+                {{ macros_form.form_widget(form.content) }}
+                {#                {{ macros_form.form_widget(form.submit) }}#}
+                <div class="form-group row">
+                    <div class="col-lg-8 col-sm-8 offset-lg-4 offset-sm-4">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </div>
             </div>
         </form>
 
     </div>
-    <div class="col-md-3 col-md-offset-4">
+    <div class="col-md-3 offset-md-4">
         {% for message in get_flashed_messages() %}
             <div class="alert alert-warning">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -27,4 +36,25 @@
             </div>
         {% endfor %}
     </div>
+        <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
 {% endblock %}

@@ -4,7 +4,7 @@ Author : renwl
 Date : 日期
 Desc : 数据模型层
 '''
-from app import db
+from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from . import manager
@@ -100,6 +100,15 @@ class Role(db.Model):
         db.session.commit()
 
 
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.user_id'),
+    primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.user_id'),
+    primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     user_id = db.Column(db.Integer, primary_key=True, comment='用户ID')
@@ -114,6 +123,40 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.now)
     last_seen = db.Column(db.DateTime(), default=datetime.now)
     post = db.relationship('Post', backref='post', lazy='dynamic')
+
+    followed = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    followers = db.relationship('Follow',
+                                foreign_keys=[Follow.followed_id],
+                                backref=db.backref('followed', lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all, delete-orphan')
+
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(follower=self, followed=user)
+        db.session.add(f)
+
+    def unfollow(self, user):
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
+
+    def is_following(self, user):
+        if user.id is None:
+             return False
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        if user.id is None:
+             return False
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
+
 
     def ping(self):
         '''更新用户最后登录时间'''

@@ -15,8 +15,11 @@ __author__ = 'Ealine'
 from random import randint
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
-from . import db
-from .models import User, Post
+from jobbole import db
+from app.models import User, Post, Role
+# from flask_sqlalchemy import SQLAlchemy
+
+# db = SQLAlchemy()
 
 
 def users(count=100):
@@ -53,3 +56,4 @@ def posts(count=100):
 
 users(10)
 posts(100)
+Role.insert_roles()

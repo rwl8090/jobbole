@@ -11,3 +11,4 @@ Flask-User
 flask-pagedown
 markdown
 bleach
+Flask-Script
