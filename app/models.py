@@ -103,9 +103,9 @@ class Role(db.Model):
 class Follow(db.Model):
     __tablename__ = 'follows'
     follower_id = db.Column(db.Integer, db.ForeignKey('user.user_id'),
-    primary_key=True)
+                            primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('user.user_id'),
-    primary_key=True)
+                            primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
@@ -147,16 +147,15 @@ class User(UserMixin, db.Model):
 
     def is_following(self, user):
         if user.id is None:
-             return False
+            return False
         return self.followed.filter_by(
             followed_id=user.id).first() is not None
 
     def is_followed_by(self, user):
         if user.id is None:
-             return False
+            return False
         return self.followers.filter_by(
             follower_id=user.id).first() is not None
-
 
     def ping(self):
         '''更新用户最后登录时间'''
@@ -290,7 +289,6 @@ class Post(db.Model):
 db.event.listen(Post.content, 'set', Post.on_changed_body)
 
 
-
 # 文章评论
 class Comment(db.Model):
     __tablename__ = 'comment'
@@ -320,6 +318,7 @@ class Post2Comment(db.Model):
         db.ForeignKey('ptype.type_id'),
         comment='评论id')
     crtd_time = db.Column(db.String(40), comment='记录时间')
+
 
 ##########################################################################
 

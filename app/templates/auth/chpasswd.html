@@ -2,22 +2,31 @@
 {#{% import 'bootstrap/wtf.html' as wtf %}#}
 {% block html_attribs %} lang="zh"{% endblock %}
 {% block title %}{{ title_name }}{% endblock %}
+{% import "macro/_macro_simple_form.html" as macros_form %}
 {% block content %}
-        <div class="col-md-3 col-md-offset-4" align="center">
+    <div class="col-md-3 offset-md-4" align="center">
         <h3>{{ title_name }}</h3>
     </div>
     <form method="POST" class="form-horizontal" role="form">
-        <div class="col-md-3 col-md-offset-4">
+        <div class="col-md-3 offset-md-4">
             {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.old_user_passwd, placeholder='旧密码') }}
-            {{ wtf.form_field(form.new_user_passwd, placeholder='新密码') }}
-            {{ wtf.form_field(form.confirm_user_passwd, placeholder='确认密码') }}
-            {{ wtf.form_field(form.submit) }}
+{#            {{ wtf.form_field(form.old_user_passwd, placeholder='旧密码') }}#}
+{#            {{ wtf.form_field(form.new_user_passwd, placeholder='新密码') }}#}
+{#            {{ wtf.form_field(form.confirm_user_passwd, placeholder='确认密码') }}#}
+{#            {{ wtf.form_field(form.submit) }}#}
 
+            {{ macros_form.form_widget(form.new_user_passwd) }}
+            {{ macros_form.form_widget(form.confirm_user_passwd) }}
+            <div class="form-group row">
+                {#                {{ form.user_passwd_confirm.label(class="col-lg-4 col-sm-4 col-form-label") }}#}
+                <div class="col-lg-8 col-sm-8 offset-lg-4 offset-sm-4">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </div>
         </div>
     </form>
-    <div class="col-md-3 col-md-offset-4">
+    <div class="col-md-3 offset-md-4">
         {% for message in get_flashed_messages() %}
             <div class="alert alert-warning">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>

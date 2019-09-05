@@ -16,10 +16,7 @@ from random import randint
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
 from jobbole import db
-from app.models import User, Post, Role
-# from flask_sqlalchemy import SQLAlchemy
-
-# db = SQLAlchemy()
+from app.models import User, Post, Role, Follow
 
 
 def users(count=100):
@@ -53,6 +50,18 @@ def posts(count=100):
         db.session.add(p)
     db.session.commit()
 
+
+def follow(count=100):
+    user_count = User.query.count()
+
+    for i in range(count):
+        u1 = User.query.offset(randint(0, user_count - 1)).first()
+        u2 = User.query.offset(randint(0, user_count - 1)).first()
+        if u1.user_id != u2.user_id:
+            f = Follow(follower_id=u1.user_id,
+                       followed_id=u2.user_id)
+            db.session.add(f)
+    db.session.commit()
 
 # users(10)
 # posts(100)
