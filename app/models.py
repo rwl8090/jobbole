@@ -102,10 +102,9 @@ class Role(db.Model):
 
 class Follow(db.Model):
     __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('user.user_id'),
-                            primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('user.user_id'),
-                            primary_key=True)
+    follow_id = db.Column(db.Integer, primary_key=True, unique=True)
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
