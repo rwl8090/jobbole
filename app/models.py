@@ -140,21 +140,21 @@ class User(UserMixin, db.Model):
         db.session.add(f)
 
     def unfollow(self, user):
-        f = self.followed.filter_by(followed_id=user.id).first()
+        f = self.followed.filter_by(followed_id=user.user_id).first()
         if f:
             db.session.delete(f)
 
     def is_following(self, user):
-        if user.id is None:
+        if user.user_id is None:
             return False
         return self.followed.filter_by(
-            followed_id=user.id).first() is not None
+            followed_id=user.user_id).first() is not None
 
     def is_followed_by(self, user):
-        if user.id is None:
+        if user.user_id is None:
             return False
         return self.followers.filter_by(
-            follower_id=user.id).first() is not None
+            follower_id=user.user_id).first() is not None
 
     def ping(self):
         '''更新用户最后登录时间'''

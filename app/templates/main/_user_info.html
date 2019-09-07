@@ -1,0 +1,52 @@
+{#     个人信息       #}
+<div id="uf">
+    <img src="/static/img/person-icon.jpg" class="rounded-circle" style="height: 60px;">
+    <span class="h7"
+          style="vertical-align:middle ;padding-left: 15px">{{ user.user_name }}</span>
+
+
+    {% if current_user.can(1) and user != current_user %}   {# 判断   #}
+
+        <a class="btn btn-sm btn-outline-info small" id="follow">
+            {% if not current_user.is_following(user) %}
+                关注
+            {% else %}
+                取消关注
+            {% endif %}
+        </a>
+
+        {#            <a class="btn btn-sm btn-outline-info small" id="unfollow"></a>#}
+
+    {% endif %}
+
+    {#<a href="" class="btn btn-sm btn-outline-info small">关注</a>#}
+    <input type="hidden" id="uid" value="{{ user.user_id }}">
+
+    <hr>
+    <span>粉丝: <span class="badge badge-secondary">{{ user.followers.count() }}</span>
+    {#        </a>#}
+    {#        <a href="{{ url_for('.followed_by', username=user.user_name) }}">      </a>#}
+    喜欢: <span class="badge badge-secondary">{{ user.followed.count() }}</span></span>
+    <hr>
+    <span>来自：{{ user.location }}</span>
+    <hr>
+    <p>关于我：{{ user.about_me }}</p>
+</div>
+{#<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.js"></script>#}
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+{#<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>#}
+<script>
+    $(document).ready(function () {
+        $("#follow").click(function () {
+            var user_id = $("#uid").val();
+            $.ajax({
+                url: "/follow/" + user_id, success: function (result) {
+                    alert('执行成功');
+                    {#$("#uf").html(result);#}
+                }
+            });
+        });
+
+
+    });
+</script>

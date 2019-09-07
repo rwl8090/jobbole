@@ -7,9 +7,9 @@ Date : 日期
 Desc : 视图层
 '''
 
-from flask import render_template, request, current_app
+from flask import render_template, request, current_app, redirect
 from . import main_bp
-from flask_login import login_required
+from flask_login import login_required, current_user
 import pysnooper
 from app.decorators import permission_required
 from app.models import Permission, Post, User
@@ -72,6 +72,8 @@ def uplist():
     page = request.args.get('page', 1, type=int)
     userid = request.args.get('userid', type=int)
 
+    user = User.query.filter(User.user_id == userid).first()
+
     pagination = db.session.query(
         Post.post_id,
         Post.content,
@@ -96,6 +98,7 @@ def uplist():
         'main/uplist.html',
         posts=posts,
         pagination=pagination,
+        user=user,
         title_name='伯乐在线')
     # posts = db.session.query(Post.post_id, Post.content, Post.crtd_time,
     #                          Post.title, User.user_name, User.about_me, User.location, User.user_id).\
@@ -122,18 +125,20 @@ def get_post(postid):
         User.about_me).filter(
         Post.post_id == postid).filter(
         Post.user_id == User.user_id).first()
+    user = User.query.filter(User.user_id == post.user_id).first()
 
-    return render_template('main/post.html', post=post, title_name='博客')
+    return render_template('main/post.html', post=post, user=user, title_name='博客')
 
 
-@main_bp.route('/search_post/<key_word>', methods=['GET', 'POST'])
+@main_bp.route('/search_post/', methods=['GET', 'POST'])
 @pysnooper.snoop()
-def search_post(key_word):
+def search_post():
     '''搜索博客'''
     page = request.args.get('page', 1, type=int)
     searchform = SearchForm()
+    key_word = searchform['key_word'].data
 
-    if searchform.validate_on_submit():
+    if 1:  # searchform.validate_on_submit():
         pagination = db.session.query(
             Post.post_id,
             Post.content,
@@ -142,8 +147,8 @@ def search_post(key_word):
             Post.title,
             User.user_name,
             User.user_id).filter(
-            Post.user_id == User.user_id)\
-            .filter(Post.title.contains(key_word) or Post.body_html.contains(key_word))\
+            Post.user_id == User.user_id) \
+            .filter(Post.title.contains(key_word) | Post.body_html.contains(key_word)) \
             .order_by(
             Post.crtd_time.desc()).paginate(
             page,
@@ -157,4 +162,25 @@ def search_post(key_word):
             'main/index.html',
             posts=posts,
             pagination=pagination,
-            title_name='伯乐在线')
+            title_name='搜索结果')
+
+
+@main_bp.route('/follow/<int:user_id>')
+@pysnooper.snoop()
+def follow(user_id):
+    user = User.query.filter(User.user_id == user_id).first()
+    if not current_user.is_following(user): # 判断是否关注
+        current_user.unfollow(user)
+        return 'True'
+    else:
+        current_user.follow(user)
+        return 'True'
+
+
+@main_bp.route('/unfollow/<int:user_id>')
+def unfollow(user_id):
+    user = User.query.filter(User.user_id == user_id).first()
+    current_user.unfollow(user)
+    db.session.add(user)
+    db.session.commit()
+    return user

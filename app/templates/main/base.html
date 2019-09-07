@@ -5,7 +5,7 @@
 {% block styles %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     {#    <link rel="stylesheet" href="{{ url_for('static', filename='css/mycss.css') }}">#}
 {% endblock %}
 
@@ -15,7 +15,7 @@
 
 
 {% block navbar %}
-  {% include 'main/_navbar.html' %}
+    {% include 'main/_navbar.html' %}
 
 
 
@@ -102,7 +102,7 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 

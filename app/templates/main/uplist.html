@@ -9,13 +9,7 @@
 
 
         <div class="col-md-2">
-            {#     个人信息       #}
-            <img src="/static/img/person-icon.jpg" class="rounded-circle" style="height: 60px;">
-            <span class="h7" style="vertical-align:middle ;padding-left: 15px">{{ posts[0].user_name }}</span>
-            <hr>
-            <span>来自：{{ posts[0].location }}</span>
-            <hr>
-            <p>关于我：{{ posts[0].about_me }}</p>
+            {% include 'main/_user_info.html' %}
 
         </div>
 
@@ -27,6 +21,8 @@
         </div>
 
     </div>
-{% endblock %}
 
+
+
+{% endblock %}
 

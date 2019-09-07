@@ -3,39 +3,33 @@
 {% block title %}{{ post[0].user_name }}的博客空间{% endblock %}
 
 <div class="container">
-{% block content %}
+    {% block content %}
 
-    <div class="col-md-10 offset-md-1 row">
+        <div class="col-md-10 offset-md-1 row">
 
 
-        <div class="col-md-2">
-            {#     个人信息       #}
-            <img src="/static/img/person-icon.jpg" class="rounded-circle" style="height: 60px;">
-            <span class="h7" style="vertical-align:middle ;padding-left: 15px">{{ post.user_name }}</span>
-            <hr>
-            <span>来自：{{ post.location }}</span>
-            <hr>
-            <p>关于我：{{ post.about_me }}</p>
+            <div class="col-md-2">
 
-        </div>
+                {% include 'main/_user_info.html' %}
+            </div>
 
-        <div class="col-md-8">
-            <h1>{{ post.title }}</h1>
+            <div class="col-md-8">
+                <h1>{{ post.title }}</h1>
 
-            <p>{{ post.crtd_time.strftime("%Y-%m-%d %H:%M:%S") }}</p>
+                <p>{{ post.crtd_time.strftime("%Y-%m-%d %H:%M:%S") }}</p>
 
-            <p>
+                <p>
                 <hr style="height:1px;border-top:1px solid #E0E0E0;"/>
-            </p>
-            <p> {% if post.body_html %}
-                {{ post.body_html | safe }}
-            {% else %}
-                {{ post.content }}
-            {% endif %} </p>
+                </p>
+                <p> {% if post.body_html %}
+                    {{ post.body_html | safe }}
+                {% else %}
+                    {{ post.content }}
+                {% endif %} </p>
+            </div>
         </div>
-    </div>
 
 
-{% endblock %}
+    {% endblock %}
 </div>
 
