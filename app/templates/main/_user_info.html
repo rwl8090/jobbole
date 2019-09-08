@@ -23,14 +23,15 @@
     <input type="hidden" id="uid" value="{{ user.user_id }}">
 
     <hr>
-    <span>粉丝: <span class="badge badge-secondary">{{ user.followers.count() }}</span>
+    <span>粉丝: <span class="badge badge-secondary" id="fans">{{ user.followers.count() }}</span>
     {#        </a>#}
     {#        <a href="{{ url_for('.followed_by', username=user.user_name) }}">      </a>#}
-    喜欢: <span class="badge badge-secondary">{{ user.followed.count() }}</span></span>
+    喜欢: <span class="badge badge-secondary" id="collects">{{ user.followed.count() }}</span>
+    </span>
     <hr>
-    <span>来自：{{ user.location }}</span>
+    来自：<span id="location">{{ user.location }}</span>
     <hr>
-    <p>关于我：{{ user.about_me }}</p>
+    关于我：<span id="about_me">{{ user.about_me }}</span>
 </div>
 {#<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.js"></script>#}
 <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
@@ -40,9 +41,15 @@
         $("#follow").click(function () {
             var user_id = $("#uid").val();
             $.ajax({
-                url: "/follow/" + user_id, success: function (result) {
-                    alert('执行成功');
-                    {#$("#uf").html(result);#}
+                url: "/follow/" + user_id,
+                dataType: 'json',
+                success: function (response) {
+                    $.each(response, function (index, item) {
+                        {#$("#follow").html(response.data);#}
+                        {#alert(index);#}
+                        $("#"+index).html(item);
+
+                    })
                 }
             });
         });

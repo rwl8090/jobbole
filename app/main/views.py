@@ -7,7 +7,7 @@ Date : 日期
 Desc : 视图层
 '''
 
-from flask import render_template, request, current_app, redirect
+from flask import render_template, request, current_app, redirect, jsonify
 from . import main_bp
 from flask_login import login_required, current_user
 import pysnooper
@@ -169,12 +169,26 @@ def search_post():
 @pysnooper.snoop()
 def follow(user_id):
     user = User.query.filter(User.user_id == user_id).first()
-    if not current_user.is_following(user): # 判断是否关注
+    if current_user.is_following(user):  # 判断是否关注
         current_user.unfollow(user)
-        return 'True'
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'follow': '关注',
+                        'fans': user.followers.count(),
+                        'collects': user.followed.count(),
+                        'location': user.location,
+                        'about_me': user.about_me
+                        })
     else:
         current_user.follow(user)
-        return 'True'
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'follow': '取消关注',
+                        'fans': user.followers.count(),
+                        'collects': user.followed.count(),
+                        'location': user.location,
+                        'about_me': user.about_me
+                        })
 
 
 @main_bp.route('/unfollow/<int:user_id>')

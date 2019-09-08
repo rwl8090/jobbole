@@ -330,6 +330,8 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+from app import manager
+manager.anonymous_user = AnonymousUser
 
 @manager.user_loader
 def load_user(user_id):
