@@ -12,3 +12,4 @@ flask-pagedown
 markdown
 bleach
 Flask-Script
+pymysql

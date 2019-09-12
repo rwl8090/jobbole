@@ -262,29 +262,30 @@ class Post(db.Model):
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
-        attrs = {
-            '*': ['class'],
-            'a': ['href', 'rel'],
-            'img': ['src', 'alt'],
-        }
-
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul', 'img',
-                        'h1', 'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(
-            bleach.clean(
-                markdown(
-                    value,
-                    output_format='html'),
-                tags=allowed_tags,
-                attributes=attrs,
-                strip=True))
-
-
-# on_changed_body() 函数注册在 body 字段上，是 SQLAlchemy“set”事件的监听程序，这
-# 意味着只要 body 字段设了新值，这个函数就会自动被调用。on_changed_body() 函数把
-# body 字段中的文本渲染成 HTML 格式，将结果保存在 body_html 中，自动且高效地完成
-# Markdown 文本到 HTML 的转换。
+        target.body_html = value
+#         attrs = {
+#             '*': ['class'],
+#             'a': ['href', 'rel'],
+#             'img': ['src', 'alt'],
+#         }
+#
+#         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+#                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul', 'img',
+#                         'h1', 'h2', 'h3', 'p']
+#         target.body_html = bleach.linkify(
+#             bleach.clean(
+#                 markdown(
+#                     value,
+#                     output_format='html'),
+#                 tags=allowed_tags,
+#                 attributes=attrs,
+#                 strip=True))
+#
+#
+# # on_changed_body() 函数注册在 body 字段上，是 SQLAlchemy“set”事件的监听程序，这
+# # 意味着只要 body 字段设了新值，这个函数就会自动被调用。on_changed_body() 函数把
+# # body 字段中的文本渲染成 HTML 格式，将结果保存在 body_html 中，自动且高效地完成
+# # Markdown 文本到 HTML 的转换。
 db.event.listen(Post.content, 'set', Post.on_changed_body)
 
 

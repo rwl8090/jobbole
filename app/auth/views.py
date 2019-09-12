@@ -263,6 +263,29 @@ def add_post():
         form=editpostform,
         title='新增博客')
 
+@auth_bp.route('/add_post_ckeditor/', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def add_post_ckeditor():
+    editpostform = EditPostForm()
+    print(editpostform.content.data)
+
+
+    if editpostform.validate_on_submit():
+        post = Post(user_id=current_user.user_id,
+                    title=editpostform.title.data,
+                    content=editpostform.content.data,
+                    crtd_time=datetime.now(),
+                    last_edit_time=datetime.now())
+        db.session.add(post)
+        db.session.commit()
+        flash('增加博客成功！！')
+        return redirect(url_for('auth.add_post_ckeditor'))
+    return render_template(
+        'auth/addpost_ckeditor.html',
+        form=editpostform,
+        title='新增博客')
+
 
 @auth_bp.route('/list_post/', methods=['GET', 'POST'])
 @login_required
