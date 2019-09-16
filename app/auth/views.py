@@ -5,10 +5,10 @@ Date : 日期
 Desc : 描述内容
 '''
 
-
 from flask import render_template, session, redirect, url_for, flash, request, abort
 from . import auth_bp
-from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm, EditUserForm, EditPostForm
+from .forms import LoginForm, RegisterForm, ChpasswdForm, PasswdResetForm, PasswdResetResponseForm, EditUserForm, \
+    EditPostForm
 from ..models import User, Post
 from flask_login import login_user, login_required, logout_user, current_user
 import pysnooper
@@ -149,7 +149,6 @@ def chpasswd():
         title_name='修改密码')
 
 
-
 @auth_bp.route('/forget_passwd/', methods=['GET', 'POST'])
 @pysnooper.snoop()
 def forget_passwd():
@@ -263,13 +262,13 @@ def add_post():
         form=editpostform,
         title='新增博客')
 
+
 @auth_bp.route('/add_post_ckeditor/', methods=['GET', 'POST'])
 @login_required
 @pysnooper.snoop()
 def add_post_ckeditor():
     editpostform = EditPostForm()
     print(editpostform.content.data)
-
 
     if editpostform.validate_on_submit():
         post = Post(user_id=current_user.user_id,
@@ -330,5 +329,13 @@ def editpost():
         title='修改博客')
 
 
-
-
+@auth_bp.route('/droppost/<int:postid>', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def droppost(postid):
+    post = Post.query.filter_by(post_id=postid).first()
+    if (post.status is None) | (post.status==1):
+        post.status = 0
+        db.session.add(post)
+        db.session.commit()
+    return redirect(url_for('auth.list_post'))

@@ -33,7 +33,8 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     # 259601nd01.qicp.vip
-    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python_Pwd#012@259601nd01.qicp.vip:19890/python'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python_Pwd#012@192.168.18.159:3306/python'
+    #SQLALCHEMY_DATABASE_URI = os.environ.get('MYSQL_URI') #
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python_Pwd#012@259601nd01.qicp.vip:35106/python'
+    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://python:python_Pwd#012@192.168.18.159:3306/python'
     #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'jobbole.db')
 config = {'development' : DevelopmentConfig}

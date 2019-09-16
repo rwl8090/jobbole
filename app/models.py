@@ -123,6 +123,8 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.now)
     post = db.relationship('Post', backref='post', lazy='dynamic')
 
+    status = db.Column(db.Integer, comment='用户状态：1 在用 ； 0 冻结', default=1)
+
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
@@ -259,10 +261,13 @@ class Post(db.Model):
     title = db.Column(db.String(200), comment='文章标题')
 
     body_html = db.Column(db.Text)
+    status = db.Column(db.Integer, comment='博客状态：1 公开,0 本人可见,-1 已删除', default=1)
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         target.body_html = value
+
+
 #         attrs = {
 #             '*': ['class'],
 #             'a': ['href', 'rel'],
@@ -331,8 +336,11 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
 from app import manager
+
 manager.anonymous_user = AnonymousUser
+
 
 @manager.user_loader
 def load_user(user_id):

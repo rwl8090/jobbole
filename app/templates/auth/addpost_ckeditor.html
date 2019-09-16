@@ -28,7 +28,7 @@
                 </div>
 
                 {#                <textarea id="editor1">{{ form.content(class="ckeditor") }}</textarea>#}
-                <textarea id="editor1" class="ckeditor" name="content">Sample Text</textarea>
+                <textarea id="editor1" class="ckeditor" name="content"></textarea>
 
                 {#                {{ macros_form.form_widget(form.submit) }}#}
                 <div class="form-group row">
@@ -49,25 +49,26 @@
         {% endfor %}
     </div>
     <script src="https://cdn.bootcss.com/ckeditor/4.12.1/ckeditor.js"></script>
-    <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-            'use strict';
-            window.addEventListener('load', function () {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
-                var validation = Array.prototype.filter.call(forms, function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script>
+{#    <script src="{{ url_for('static', filename='js/ckeditor.js') }}"></script>#}
+{#    <script>#}
+{#        // Example starter JavaScript for disabling form submissions if there are invalid fields#}
+{#        (function () {#}
+{#            'use strict';#}
+{#            window.addEventListener('load', function () {#}
+{#                // Fetch all the forms we want to apply custom Bootstrap validation styles to#}
+{#                var forms = document.getElementsByClassName('needs-validation');#}
+{#                // Loop over them and prevent submission#}
+{#                var validation = Array.prototype.filter.call(forms, function (form) {#}
+{#                    form.addEventListener('submit', function (event) {#}
+{#                        if (form.checkValidity() === false) {#}
+{#                            event.preventDefault();#}
+{#                            event.stopPropagation();#}
+{#                        }#}
+{##}
+{#                        form.classList.add('was-validated');#}
+{#                    }, false);#}
+{#                });#}
+{#            }, false);#}
+{#        })();#}
+{#    </script>#}
 {% endblock %}
