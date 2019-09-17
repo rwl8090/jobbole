@@ -23,12 +23,12 @@
                         <span class="input-group-text" id="basic-addon1">{{ form.title.label }}</span>
                     </div>
                     <input type="text" class="form-control" placeholder="标题" name="title" aria-label="Username"
-                           aria-describedby="basic-addon1">
+                           aria-describedby="basic-addon1" value="{{ form.title.data }}">
 
                 </div>
 
                 {#                <textarea id="editor1">{{ form.content(class="ckeditor") }}</textarea>#}
-                <textarea id="editor1" class="ckeditor" name="content"></textarea>
+                <textarea id="editor1" class="ckeditor" name="content">{{ form.content.data }}</textarea>
 
                 {#                {{ macros_form.form_widget(form.submit) }}#}
                 <div class="form-group row">

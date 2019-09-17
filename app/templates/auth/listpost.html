@@ -9,11 +9,20 @@
     <div class="col-md-6 offset-md-1">
         <ul class="list-group">
             {% for post in posts %}
-                <li class="list-group-item"><a class="h3" href="#">{{ post.title }}</a>
-                    <a class="btn btn-primary" href="{{ url_for('auth.editpost', postid=post.post_id) }}">编辑</a>
-                    <a class="btn btn-primary" href="{{ url_for('auth.droppost', postid=post.post_id) }}">私有化</a>
+                {% if post.status!=-1 %}
+                    <li class="list-group-item"><a class="h3" href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>
+                        <a class="btn btn-primary" href="{{ url_for('auth.editpost', postid=post.post_id) }}">编辑</a>
+                        {% if post.status==1 %}
+                            <a class="btn btn-primary"
+                               href="{{ url_for('auth.privatepost', postid=post.post_id) }}">私有化</a>
+                        {% elif post.status==0 %}
+                            <a class="btn btn-primary"
+                               href="{{ url_for('auth.publicpost', postid=post.post_id) }}">公开</a>
+                        {% endif %}
 
-                </li>
+                        <a class="btn btn-primary" href="{{ url_for('auth.droppost', postid=post.post_id) }}">删除</a>
+                    </li>
+                {% endif %}
 
             {% endfor %}
         </ul>

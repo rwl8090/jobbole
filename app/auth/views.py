@@ -268,7 +268,7 @@ def add_post():
 @pysnooper.snoop()
 def add_post_ckeditor():
     editpostform = EditPostForm()
-    print(editpostform.content.data)
+
 
     if editpostform.validate_on_submit():
         post = Post(user_id=current_user.user_id,
@@ -322,9 +322,9 @@ def editpost():
     # post = Post.query.filter_by(post_id=postid).first()
 
     editpostform.title.data = post.title
-    editpostform.content.data = post.content
+    editpostform.content.data = post.body_html
     return render_template(
-        'auth/addpost.html',
+        'auth/edit_post_ckeditor.html',
         form=editpostform,
         title='修改博客')
 
@@ -333,9 +333,40 @@ def editpost():
 @login_required
 @pysnooper.snoop()
 def droppost(postid):
+    '''删除博客'''
+    post = Post.query.filter_by(post_id=postid).first()
+    if (post.status is None) | (post.status!=-1):
+        post.status = -1
+        db.session.add(post)
+        db.session.commit()
+    return redirect(url_for('auth.list_post'))
+
+
+
+@auth_bp.route('/privatepost/<int:postid>', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def privatepost(postid):
+    '''私有化'''
     post = Post.query.filter_by(post_id=postid).first()
     if (post.status is None) | (post.status==1):
         post.status = 0
         db.session.add(post)
         db.session.commit()
     return redirect(url_for('auth.list_post'))
+
+
+@auth_bp.route('/publicpost/<int:postid>', methods=['GET', 'POST'])
+@login_required
+@pysnooper.snoop()
+def publicpost(postid):
+    '''公开博客'''
+    post = Post.query.filter_by(post_id=postid).first()
+    if (post.status is None) | (post.status!=1):
+        post.status = 1
+        db.session.add(post)
+        db.session.commit()
+    return redirect(url_for('auth.list_post'))
+
+
+
