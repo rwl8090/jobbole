@@ -2,25 +2,24 @@
 {#{% import 'bootstrap/wtf.html' as wtf %}#}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-    <div class="col-md-6 offset-md-3">
 
-
-    </div>
-    <div class="col-md-6 offset-md-1">
+    <div class="col-md-10 offset-md-1">
         <ul class="list-group">
             {% for post in posts %}
                 {% if post.status!=-1 %}
-                    <li class="list-group-item"><a class="h3" href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>
+                    <li class="list-group-item"><a class="h3"
+                                                   href="{{ url_for('main.get_post', postid=post.post_id) }}">{{ post.title }}</a>
                         <a class="btn btn-primary" href="{{ url_for('auth.editpost', postid=post.post_id) }}">编辑</a>
                         {% if post.status==1 %}
-                            <a class="btn btn-primary"
+                            <a class="btn btn-primary small"
                                href="{{ url_for('auth.privatepost', postid=post.post_id) }}">私有化</a>
                         {% elif post.status==0 %}
-                            <a class="btn btn-primary"
+                            <a class="btn btn-primary small"
                                href="{{ url_for('auth.publicpost', postid=post.post_id) }}">公开</a>
                         {% endif %}
 
-                        <a class="btn btn-primary" href="{{ url_for('auth.droppost', postid=post.post_id) }}">删除</a>
+                        <a class="btn btn-danger small"
+                           href="{{ url_for('auth.droppost', postid=post.post_id) }}">删除</a>
                     </li>
                 {% endif %}
 

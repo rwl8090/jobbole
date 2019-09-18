@@ -16,7 +16,7 @@ from random import randint
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
 from jobbole import db
-from app.models import User, Post, Role, Follow
+from app.models import User, Post, Role, Follow, Comment
 
 
 def users(count=100):
@@ -62,6 +62,23 @@ def follow(count=100):
                        followed_id=u2.user_id)
             db.session.add(f)
     db.session.commit()
+
+
+def comments(count=50):
+    user_count = User.query.count()
+    post_count = Post.query.count()
+    faker = Faker(locale='zh_CN')
+    for i in range(count):
+        u1 = User.query.offset(randint(0, user_count - 1)).first()
+        p1 = Post.query.offset(randint(0, post_count - 1)).first()
+
+
+        comm = Comment(user_id=u1.user_id, post_id=p1.post_id, comment_content=faker.text())
+        db.session.add(comm)
+    db.session.commit()
+
+
+
 
 # users(10)
 # posts(100)

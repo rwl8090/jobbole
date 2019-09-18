@@ -268,7 +268,7 @@ class Post(db.Model):
         target.body_html = value
 
 
-#         attrs = {
+# attrs = {
 #             '*': ['class'],
 #             'a': ['href', 'rel'],
 #             'img': ['src', 'alt'],
@@ -302,15 +302,16 @@ class Comment(db.Model):
         db.Integer,
         db.ForeignKey('post.post_id'),
         comment='文章id')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), comment='评论人id')
     comment_content = db.Column(db.Text, comment='评论内容')
-    crtd_time = db.Column(db.String(40), comment='评论时间')
+    crtd_time = db.Column(db.Date, comment='评论时间', default=datetime.now())
 
 
 # 文章类型
 class Ptype(db.Model):
     __tablename__ = 'ptype'
     type_id = db.Column(db.Integer, primary_key=True, comment='类型id')
-    type_name = db.Column(db.String(200), comment='文章类型名称')
+    type_name = db.Column(db.Date, comment='文章类型名称')
 
 
 # 文章评论与类型
@@ -322,14 +323,13 @@ class Post2Comment(db.Model):
         db.Integer,
         db.ForeignKey('ptype.type_id'),
         comment='评论id')
-    crtd_time = db.Column(db.String(40), comment='记录时间')
+    crtd_time = db.Column(db.Date, comment='记录时间')
 
 
 ##########################################################################
 
 
 class AnonymousUser(AnonymousUserMixin):
-
     def can(self, permissions):
         return False
 
