@@ -26,7 +26,25 @@
                 {% else %}
                     {{ post.content }}
                 {% endif %} </p>
+                <hr>
+
+
+                <div class="col-md-12">
+{# 评论区表单： 判断当前用户是否登录，是否为本人博客，本人博客默认不展示提交博客 #}
+
+
+
+{# 评论区展示#}
+                    {% for comment in comments %}
+                        <p class="small"><img src="/static/img/person-icon.jpg" class="rounded-circle"
+                                              style="height: 25px;">
+                            <b>{{ comment.user_name }} :</b>
+                            {{ comment.comment_content }} </p>
+                        <hr style="border:0.5px dashed #000"/>
+                    {% endfor %}
+                </div>
             </div>
+
         </div>
 
 

@@ -12,7 +12,7 @@ from . import main_bp
 from flask_login import login_required, current_user
 import pysnooper
 from app.decorators import permission_required
-from app.models import Permission, Post, User
+from app.models import Permission, Post, User, Comment
 from app import db
 from .forms import SearchForm
 
@@ -127,7 +127,12 @@ def get_post(postid):
         Post.user_id == User.user_id).first()
     user = User.query.filter(User.user_id == post.user_id).first()
 
-    return render_template('main/post.html', post=post, user=user, title_name='博客')
+    comments = db.session.query(Comment.post_id, Comment.comment_content, Comment.crtd_time, User.user_name).filter(
+        User.user_id == Comment.user_id).filter_by(post_id=postid).all()
+
+    # comments = Comment.query.filter_by(post_id=postid).all()
+
+    return render_template('main/post.html', post=post, user=user, comments=comments, title_name='博客')
 
 
 @main_bp.route('/search_post/', methods=['GET', 'POST'])
