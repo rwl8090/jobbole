@@ -16,3 +16,6 @@ class SearchForm(FlaskForm):
     submit = SubmitField('搜索')
 
 
+class CommentForm(FlaskForm):
+    comment_content = StringField("评论内容", validators=[DataRequired(message='请填入评论内容！')])
+    submit = SubmitField('发表')

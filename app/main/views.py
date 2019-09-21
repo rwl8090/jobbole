@@ -7,14 +7,14 @@ Date : 日期
 Desc : 视图层
 '''
 
-from flask import render_template, request, current_app, redirect, jsonify
+from flask import render_template, request, current_app, redirect, jsonify, url_for
 from . import main_bp
 from flask_login import login_required, current_user
 import pysnooper
 from app.decorators import permission_required
 from app.models import Permission, Post, User, Comment
 from app import db
-from .forms import SearchForm
+from .forms import SearchForm, CommentForm
 
 
 @main_bp.route('/', methods=['GET', 'POST'])
@@ -108,10 +108,22 @@ def uplist():
     # return render_template('main/uplist.html', posts=posts)
 
 
-@main_bp.route('/getpost/<int:postid>')
+@main_bp.route('/getpost/<int:postid>', methods=['GET', 'POSt'])
 @pysnooper.snoop()
 def get_post(postid):
     '''博客详情展示页面,传入参数：博客id'''
+
+    comment_form = CommentForm()
+
+    from datetime import datetime
+
+    if comment_form.validate_on_submit():
+        comm = Comment(post_id=postid, comment_content=comment_form.comment_content.data, crtd_time=datetime.now(),
+                       user_id=current_user.user_id)
+
+        db.session.add(comm)
+        db.session.commit()
+        return redirect(url_for('main.get_post', postid=postid))
 
     post = db.session.query(
         Post.post_id,
@@ -132,7 +144,7 @@ def get_post(postid):
 
     # comments = Comment.query.filter_by(post_id=postid).all()
 
-    return render_template('main/post.html', post=post, user=user, comments=comments, title_name='博客')
+    return render_template('main/post.html', post=post, user=user,form=comment_form ,comments=comments, title_name='博客')
 
 
 @main_bp.route('/search_post/', methods=['GET', 'POST'])

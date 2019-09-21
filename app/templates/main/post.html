@@ -30,11 +30,18 @@
 
 
                 <div class="col-md-12">
-{# 评论区表单： 判断当前用户是否登录，是否为本人博客，本人博客默认不展示提交博客 #}
-
-
-
-{# 评论区展示#}
+                    {# 评论区表单： 判断当前用户是否登录，是否为本人博客，本人博客默认不展示提交博客 #}
+                    {% if current_user.is_authenticated %}
+                        <form method="POST" class="form-horizontal needs-validation" validate role="form">
+                            {{ form.hidden_tag() }}
+                            <div class="col-md-12">
+                                <textarea class="form-control" name="comment_content" rows="2"
+                                          placeholder="想对作者说些什么？"></textarea>
+                            </div>
+                            <div class="col-md-2 offset-md-10">{{ form.submit(class='btn btn-primary') }}</div>
+                        </form>
+                    {% endif %}
+                    {# 评论区展示#}
                     {% for comment in comments %}
                         <p class="small"><img src="/static/img/person-icon.jpg" class="rounded-circle"
                                               style="height: 25px;">
