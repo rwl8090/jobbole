@@ -150,7 +150,6 @@ def chpasswd():
 
 
 @auth_bp.route('/forget_passwd/', methods=['GET', 'POST'])
-@pysnooper.snoop()
 def forget_passwd():
     '''忘记密码'''
     form = PasswdResetResponseForm()
@@ -193,17 +192,17 @@ def password_reset(token):
         title_name='重置密码')
 
 
-@auth_bp.before_app_request
-@pysnooper.snoop()
-def before_request():
-    if current_user.is_authenticated:
-        current_user.ping()
-        if not current_user.confirmed \
-                and request.endpoint \
-                and request.blueprint != 'auth' \
-                and request.endpoint != 'static':
-            r = redirect(url_for('auth.unconfirmed'))
-            return r
+# @auth_bp.before_app_request
+# @pysnooper.snoop()
+# def before_request():
+#     if current_user.is_authenticated:
+#         current_user.ping()
+#         if not current_user.confirmed \
+#                 and request.endpoint \
+#                 and request.blueprint != 'auth' \
+#                 and request.endpoint != 'static':
+#             r = redirect(url_for('auth.unconfirmed'))
+#             return r
 
 
 @auth_bp.route('/user/<username>')
@@ -268,7 +267,6 @@ def add_post():
 @pysnooper.snoop()
 def add_post_ckeditor():
     editpostform = EditPostForm()
-
 
     if editpostform.validate_on_submit():
         post = Post(user_id=current_user.user_id,
@@ -335,12 +333,11 @@ def editpost():
 def droppost(postid):
     '''删除博客'''
     post = Post.query.filter_by(post_id=postid).first()
-    if (post.status is None) | (post.status!=-1):
+    if (post.status is None) | (post.status != -1):
         post.status = -1
         db.session.add(post)
         db.session.commit()
     return redirect(url_for('auth.list_post'))
-
 
 
 @auth_bp.route('/privatepost/<int:postid>', methods=['GET', 'POST'])
@@ -349,7 +346,7 @@ def droppost(postid):
 def privatepost(postid):
     '''私有化'''
     post = Post.query.filter_by(post_id=postid).first()
-    if (post.status is None) | (post.status==1):
+    if (post.status is None) | (post.status == 1):
         post.status = 0
         db.session.add(post)
         db.session.commit()
@@ -362,11 +359,8 @@ def privatepost(postid):
 def publicpost(postid):
     '''公开博客'''
     post = Post.query.filter_by(post_id=postid).first()
-    if (post.status is None) | (post.status!=1):
+    if (post.status is None) | (post.status != 1):
         post.status = 1
         db.session.add(post)
         db.session.commit()
     return redirect(url_for('auth.list_post'))
-
-
-

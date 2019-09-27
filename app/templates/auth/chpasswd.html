@@ -11,11 +11,11 @@
         <div class="col-md-3 offset-md-4">
             {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
-{#            {{ wtf.form_field(form.old_user_passwd, placeholder='旧密码') }}#}
-{#            {{ wtf.form_field(form.new_user_passwd, placeholder='新密码') }}#}
-{#            {{ wtf.form_field(form.confirm_user_passwd, placeholder='确认密码') }}#}
-{#            {{ wtf.form_field(form.submit) }}#}
-
+            {#            {{ wtf.form_field(form.old_user_passwd, placeholder='旧密码') }}#}
+            {#            {{ wtf.form_field(form.new_user_passwd, placeholder='新密码') }}#}
+            {#            {{ wtf.form_field(form.confirm_user_passwd, placeholder='确认密码') }}#}
+            {#            {{ wtf.form_field(form.submit) }}#}
+            {{ macros_form.form_widget(form.old_user_passwd) }}
             {{ macros_form.form_widget(form.new_user_passwd) }}
             {{ macros_form.form_widget(form.confirm_user_passwd) }}
             <div class="form-group row">

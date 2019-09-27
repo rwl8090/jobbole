@@ -85,7 +85,7 @@ def uplist():
         User.location,
         User.about_me).filter(
         Post.user_id == User.user_id).filter(
-        Post.user_id == userid).order_by(
+        Post.user_id == userid).filter(Post.status==1).order_by(
         Post.crtd_time.desc()).paginate(
         page,
         per_page=int(
