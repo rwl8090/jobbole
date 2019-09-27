@@ -1,12 +1,13 @@
 {% extends 'main/base.html' %}
 {#{% import 'bootstrap/wtf.html' as wtf %}#}
 {% block html_attribs %} lang="zh"{% endblock %}
+{% import "macro/_macro_simple_form.html" as macros_form %}
 {% block title %}{{ title_name }}{% endblock %}
 {% block content %}
     <div class="col-md-3 offset-md-4" align="center">
         <h3>{{ title_name }}</h3>
     </div>
-    <form method="POST" class="form-horizontal" novalidate role="form">
+    <form method="POST" class="form-horizontal  needs-validation" role="form">
         <div class="col-md-3 offset-md-4">
             {#                    {{ wtf.quick_form(form) }}  <!-- 快速表单 -->#}
             {{ form.hidden_tag() }}
@@ -14,12 +15,8 @@
             {#            {{ wtf.form_field(form.submit, class='btn btn-primary') }}#}
 
 
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">{{ form.user_email.label(class="input-group-text") }}</div>
-                {{ form.user_email(placeholder='邮箱', class='form-control') }}
-            </div>
-{#            <button type="submit" name="submit" class="btn btn-primary">重置密码</button>#}
-        {{ form.submit() }}
+            {{ macros_form.form_widget(form.user_email) }}
+            {{ form.submit(class='btn btn-primary') }}
 
         </div>
     </form>

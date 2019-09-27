@@ -85,7 +85,7 @@ def uplist():
         User.location,
         User.about_me).filter(
         Post.user_id == User.user_id).filter(
-        Post.user_id == userid).filter(Post.status==1).order_by(
+        Post.user_id == userid).filter(Post.status == 1).order_by(
         Post.crtd_time.desc()).paginate(
         page,
         per_page=int(
@@ -144,7 +144,8 @@ def get_post(postid):
 
     # comments = Comment.query.filter_by(post_id=postid).all()
 
-    return render_template('main/post.html', post=post, user=user,form=comment_form ,comments=comments, title_name='博客')
+    return render_template('main/post.html', post=post, user=user, form=comment_form, comments=comments,
+                           title_name='博客')
 
 
 @main_bp.route('/search_post/', methods=['GET', 'POST'])
