@@ -192,17 +192,17 @@ def password_reset(token):
         title_name='重置密码')
 
 
-# @auth_bp.before_app_request
-# @pysnooper.snoop()
-# def before_request():
-#     if current_user.is_authenticated:
-#         current_user.ping()
-#         if not current_user.confirmed \
-#                 and request.endpoint \
-#                 and request.blueprint != 'auth' \
-#                 and request.endpoint != 'static':
-#             r = redirect(url_for('auth.unconfirmed'))
-#             return r
+@auth_bp.before_app_request
+@pysnooper.snoop()
+def before_request():
+    if current_user.is_authenticated:
+        current_user.ping()
+        if not current_user.confirmed \
+                and request.endpoint \
+                and request.blueprint != 'auth' \
+                and request.endpoint != 'static':
+            r = redirect(url_for('auth.unconfirmed'))
+            return r
 
 
 @auth_bp.route('/user/<username>')

@@ -6,7 +6,7 @@
         <h1>用户名： {{ user.user_name }}</h1>
         <h2>用户邮箱： {{ user.user_email }}</h2>
         <h2>用户权限ID： {{ user.role_id }}</h2>
-        <h2>用户最后一次登录时间： {{ user.last_seen.strtf }}</h2>
+        <h2>用户最后一次登录时间： {{ user.last_seen.strftime('%Y-%m-%d %H:%M:%S' ) }}</h2>
         <h2>地址： {{ user.location }}</h2>
         <h2>关于我： {{ user.about_me }}</h2>
 
